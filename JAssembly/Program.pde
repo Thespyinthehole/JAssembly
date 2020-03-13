@@ -1,4 +1,5 @@
 class Program {
+  
   Line[] instructions;
   HashMap<String, String> identifiers = new HashMap<String, String>();
 

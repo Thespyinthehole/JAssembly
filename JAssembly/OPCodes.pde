@@ -1,11 +1,12 @@
 static class OPCodes {
+  
   static HashMap<String, Short[]> opcodes;
 
   static Instruction[] opcodeFuncs = new Instruction[] {
     null, //0 HALT
     new MemoryFunctions.Mov(), //1
     new MemoryFunctions.Ldr(), //2
-    null, //3
+    new MemoryFunctions.Push(), //3
     null, //4
     null, //5
     null, //6
@@ -52,6 +53,7 @@ static class OPCodes {
     opcodes = new HashMap<String, Short[]>();
     opcodes.put("MOV", new Short[]{null, null, 1});
     opcodes.put("LDR", new Short[]{null, null, 2});
+    opcodes.put("PUSH", new Short[]{null, null, 3});
     opcodes.put("ADD", new Short[]{null, null, 32, 33});
     opcodes.put("SUB", new Short[]{null, null, 34, 35});
     opcodes.put("MUL", new Short[]{null, null, 36, 37});

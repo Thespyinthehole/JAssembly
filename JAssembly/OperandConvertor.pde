@@ -1,7 +1,9 @@
 enum OperandType {
   CONSTANT, MEMORY, REGISTER, MEMORYSHIFT
 }
+
 static class OperandConvertor {
+  
   static short convertOperand(String operand, HashMap<String, String> identifiers, int lineNum, int operandCount) throws SyntaxException {
     if (operand.matches("[a-zA-Z]{2,}") || operand.matches("[a-zA-Z]") && operand.length() == 1) {
       String op = identifiers.get(operand);

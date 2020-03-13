@@ -1,4 +1,5 @@
 static class IntepretException extends Exception {
+  
   IntepretException(int index) {
     super("Intepret error at index: " + index);
   }

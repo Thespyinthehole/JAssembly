@@ -1,4 +1,5 @@
 static class MemoryFunctions {
+
   static class Mov implements Instruction<CPU> {
     void action(CPU cpu) throws IntepretException {
       short param1 = cpu.readNext();
@@ -7,7 +8,7 @@ static class MemoryFunctions {
       switch(type) {
       case CONSTANT:
       case REGISTER:
-        throw new IntepretException(cpu.getIndex(), "Can not move into a constant value or register");
+        throw new IntepretException(cpu.getIndex(), "Can only move into a memory location");
       case MEMORY:
         memloc = OperandConvertor.extractValue(param1);
         break;
@@ -15,6 +16,9 @@ static class MemoryFunctions {
         memloc = cpu.memoryShift(param1);
         break;
       }
+
+      cpu.setFlag(Flag.NEGATIVE, false);      
+      cpu.setFlag(Flag.ZERO, false);
       cpu.write(memloc, read(cpu, cpu.readNext()));
     }
   }
@@ -33,7 +37,38 @@ static class MemoryFunctions {
       }
       short register = OperandConvertor.extractValue(param1);
       short val = cpu.readNext();
+      cpu.setFlag(Flag.NEGATIVE, false);      
+      cpu.setFlag(Flag.ZERO, false);
       cpu.setRegister(register, read(cpu, val));
+    }
+  }
+
+  static class Push implements Instruction<CPU> {
+    void action(CPU cpu) throws IntepretException {
+      short param1 = cpu.readNext();
+      OperandType type = OperandConvertor.getType(param1);
+      Short memloc = null;
+      switch(type) {
+      case CONSTANT:
+        throw new IntepretException(cpu.getIndex(), "Can only push into a register or memory location");
+      case MEMORY:
+        memloc = OperandConvertor.extractValue(param1);
+        break;
+      case MEMORYSHIFT:
+        memloc = cpu.memoryShift(param1);
+        break;
+      case REGISTER:
+        short register = OperandConvertor.extractValue(param1);
+        short val = cpu.readNext();
+        cpu.setFlag(Flag.NEGATIVE, false);      
+        cpu.setFlag(Flag.ZERO, false);
+        cpu.setRegister(register, val);
+        return;
+      }
+
+      cpu.setFlag(Flag.NEGATIVE, false);      
+      cpu.setFlag(Flag.ZERO, false);
+      cpu.write(memloc, cpu.readNext());
     }
   }
 

@@ -1,4 +1,5 @@
 class Line {
+  
   String opcode;
   String[] operands;
   int lineNum;

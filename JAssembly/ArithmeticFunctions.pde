@@ -15,7 +15,17 @@ static class ArithmeticFunctions {
     short v1 = two ? cpu.getRegister(register) : getNextParam(cpu);
     short v2 = getNextParam(cpu);
 
-    cpu.setRegister(register, function.apply(v1, v2));
+    short output = function.apply(v1, v2);
+    //println(output + " -> " + Integer.toBinaryString(output));
+    //while(output >= pow(2,14))
+    //  output -= pow(2,14);
+    //if(output >= pow(2,14))
+    //output -= pow(2,14);
+    //println(OperandConvertor.convertToBytes(String.valueOf(output)));
+
+    cpu.setFlag(Flag.ZERO, output == 0);
+    cpu.setFlag(Flag.NEGATIVE, output < 0);
+    cpu.setRegister(register, output);
   }
 
   static short getNextParam(CPU cpu) throws IntepretException {

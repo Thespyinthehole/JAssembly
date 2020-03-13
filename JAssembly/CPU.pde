@@ -1,8 +1,18 @@
+enum Flag {
+  NEGATIVE, ZERO
+}
+
 class CPU {
+
   short[] memory;
   short[] registers;
   int pc;
+
+  boolean negative = false;
+  ;
+  boolean zero = false;
   boolean halted = false;
+
   CPU() {
     this(1024, 8);
   }
@@ -23,6 +33,8 @@ class CPU {
   void step() {
     if (read(pc) == 0) {
       halted = true;
+      setFlag(Flag.NEGATIVE, false);      
+      setFlag(Flag.ZERO, false);
       return;
     }
     short val = readNext();
@@ -35,17 +47,27 @@ class CPU {
       println(e);
       return;
     }
-  
-    print("Registers: ");
-    for (short register : registers) {
-      print(register + " ");
-    }
+  }
 
-    print("\nMemory: ");
-    for (short mem : memory) {
-      print(mem + " ");
+  boolean getFlag(Flag flag) {
+    switch(flag) {
+    case NEGATIVE:
+      return negative;
+    case ZERO:
+      return zero;
     }
-    println();
+    return false;
+  }
+
+  void setFlag(Flag flag, boolean val) {
+    switch(flag) {
+    case NEGATIVE:
+      negative = val;
+      break;
+    case ZERO:
+      zero = val;
+      break;
+    }
   }
 
   short readNext() {
@@ -78,21 +100,32 @@ class CPU {
   }
 
   void run() {  
-    print("Registers: ");
-    for (short register : registers) {
-      print(register + " ");
-    }
-
-    print("\nMemory: ");
-    for (short mem : memory) {
-      print(mem + " ");
-    }
-    println();
     while (!halted)  
       step();
   }
-  
-  short mod(short a, short b){
-    return (short)(((a % b) + b) % b); 
+
+  short mod(short a, short b) {
+    return (short)(((a % b) + b) % b);
+  }
+
+  String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("Registers: ");
+    for (short register : cpu.registers) {
+      builder.append(register + " ");
+    }
+
+    builder.append("\nMemory: ");
+    for (int i = 0; i < cpu.memory.length; i++) {
+      if (i == cpu.pc)
+        builder.append(">");
+      builder.append(cpu.memory[i] + " ");
+    }
+    builder.append("\nPC: " + cpu.pc);
+    builder.append("\nFlags:");
+    builder.append("\n     Negative: " + cpu.getFlag(Flag.NEGATIVE));
+    builder.append("\n     Zero: " + cpu.getFlag(Flag.ZERO));
+    builder.append("\n------------------------");
+    return builder.toString();
   }
 }

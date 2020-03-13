@@ -1,4 +1,5 @@
 static class SyntaxException extends Exception {
+  
   SyntaxException(int lineNum) {
     super("Syntax error on line " + lineNum);
   }
