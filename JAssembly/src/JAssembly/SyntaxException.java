@@ -1,5 +1,6 @@
 package JAssembly;
 
+@SuppressWarnings("serial")
 public class SyntaxException extends Exception {
 	public SyntaxException(int lineNum) {
 		super("Syntax error on line " + lineNum);

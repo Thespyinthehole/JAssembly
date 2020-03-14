@@ -1,4 +1,4 @@
-package JAssembly.Compiler; //Fix this when I get a domain
+package JAssembly.Compiler;
 
 import java.io.File;
 import java.io.FileWriter;

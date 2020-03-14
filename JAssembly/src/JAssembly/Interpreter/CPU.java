@@ -70,6 +70,7 @@ public class CPU {
 
 	private void step() throws InterpretException {
 		short val = memory[pc++];
+		flagged = false;
 		if (val == 0) {
 			halted = true;
 			return;
@@ -82,7 +83,10 @@ public class CPU {
 			throw new InterpretException(getIndex(), "'" + val + "' is not an instruction");
 
 		opcode.accept(this);
-
+		if(!flagged) {
+			zero = false;
+			negative = false;
+		}
 		System.out.println(this);
 	}
 

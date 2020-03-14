@@ -1,5 +1,6 @@
 package JAssembly;
 
+@SuppressWarnings("serial")
 public class InterpretException extends Exception {
 
 	public InterpretException(String message) {
