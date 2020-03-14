@@ -1,0 +1,34 @@
+#a * b
+a = 10
+b = 40
+result = r2
+
+LDR r0 a
+LDR r1 b
+SUB r0 1
+JMPL zero
+ADD result r1
+
+mult: 	ADD result r1
+	SUB r0 1
+	JMPZ end
+JMP mult
+JMP end
+zero: LDR result 0
+end: HALT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
