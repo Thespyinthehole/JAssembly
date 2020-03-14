@@ -52,10 +52,9 @@ public class AssemblyCompiler {
 	}
 
 	private void writeToBinaryFile(Short[] bytecodes, File file) throws IOException {
-		String filename = file.getAbsolutePath();
+		String filename = file.getName();
 		int index = filename.indexOf(".");
 		filename = filename.substring(0, index) + ".jb";
-
 		File binaryFile = new File(filename);
 		if (binaryFile.exists())
 			binaryFile.delete();
