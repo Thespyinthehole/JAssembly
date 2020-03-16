@@ -18,22 +18,21 @@ public class AssemblyCompiler {
 	private boolean constant = true;
 	private int memloc = 0;
 	private OperandConvertor convertor = new OperandConvertor();
-	private boolean lastJmp = false;
-	private static Map<String, Short[]> opcodes = new HashMap<String, Short[]>();
+	private static Map<String, InstructionParser> opcodes = new HashMap<>();
 
 	static {
-		opcodes.put("HALT", new Short[] { 0 });
-		opcodes.put("MOV", new Short[] { null, null, 1 });
-		opcodes.put("LDR", new Short[] { null, null, 2 });
-		opcodes.put("PUSH", new Short[] { null, null, 3 });
-		opcodes.put("JMP", new Short[] { null, 4 });
-		opcodes.put("JMPZ", new Short[] { null, 5 });
-		opcodes.put("JMPL", new Short[] { null, 6 });
-		opcodes.put("JMPG", new Short[] { null, 7 });
-		opcodes.put("ADD", new Short[] { null, null, 32 });
-		opcodes.put("SUB", new Short[] { null, null, 34 });
-		opcodes.put("MUL", new Short[] { null, null, 36 });
-		opcodes.put("DIV", new Short[] { null, null, 38 });
+		opcodes.put("HALT", new InstructionParser(0, new byte[] {}));
+		opcodes.put("MOV", new InstructionParser(1, new byte[] { 6, 15 }));
+		opcodes.put("LDR", new InstructionParser(2, new byte[] { 8, 15 }));
+		opcodes.put("PUSH", new InstructionParser(3, new byte[] { 8, 15 }));
+		opcodes.put("JMP", new InstructionParser(8, new byte[] { 9 }));
+		opcodes.put("JMPZ", new InstructionParser(9, new byte[] { 9 }));
+		opcodes.put("JMPL", new InstructionParser(10, new byte[] { 9 }));
+		opcodes.put("JMPG", new InstructionParser(11, new byte[] { 9 }));
+		opcodes.put("ADD", new InstructionParser(32, new byte[] { 8, 9 }));
+		opcodes.put("SUB", new InstructionParser(32, new byte[] { 8, 9 }));
+		opcodes.put("MUL", new InstructionParser(32, new byte[] { 8, 9 }));
+		opcodes.put("DIV", new InstructionParser(32, new byte[] { 8, 9 }));
 	}
 
 	public void compile(String[] lines, File file) throws SyntaxException, IOException {
@@ -148,33 +147,22 @@ public class AssemblyCompiler {
 			return null;
 		String[] split = line.split(" ");
 		String opcode = split[0];
-		Short[] params = opcodes.get(opcode);
+		InstructionParser params = opcodes.get(opcode);
 		if (params == null)
 			throw new SyntaxException(lineNum, "Instruction '" + opcode + "' not found");
 
-		if (params.length < split.length - 1)
+		if (params.getParamCount() < split.length - 1)
 			throw new SyntaxException(lineNum,
 					"Instruction '" + opcode + "' does not accept " + (split.length - 1) + " operands");
-
-		Short bytecode = params[split.length - 1];
-
-		if (bytecode == null)
-			throw new SyntaxException(lineNum,
-					"Instruction '" + opcode + "' does not accept " + (split.length - 1) + " operands");
-
-		boolean jmp = opcode.equals("JMP");
-		
-		if (jmp && lastJmp) {
-			System.out.println("Warning: Unreachable code on line " + lineNum);
-		}
-		
-		lastJmp = jmp;
 
 		List<Short> instruction = new ArrayList<>();
-		instruction.add(bytecode);
+		instruction.add(params.getOpcode());
 
-		for (int i = 1; i < split.length; i++)
-			instruction.add(convertor.convertOperand(split[i], constants, lineNum));
+		for (int i = 1; i < split.length; i++) {
+			short operand = convertor.convertOperand(split[i], constants, lineNum);
+			params.checkParam(i - 1, operand, lineNum, opcode);
+			instruction.add(operand);
+		}
 		return instruction;
 	}
 

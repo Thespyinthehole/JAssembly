@@ -54,14 +54,14 @@ public class CPU {
 		OPCODES[1] = Memory::mov;
 		OPCODES[2] = Memory::ldr;
 		OPCODES[3] = Memory::push;
-		OPCODES[4] = Jump::jump;
-		OPCODES[5] = Jump::jumpZero;
-		OPCODES[6] = Jump::jumpLessThen;
-		OPCODES[7] = Jump::jumpGreaterThen;
+		OPCODES[8] = Jump::jump;
+		OPCODES[9] = Jump::jumpZero;
+		OPCODES[10] = Jump::jumpLessThen;
+		OPCODES[11] = Jump::jumpGreaterThen;
 		OPCODES[32] = Arithmetic::add;
-		OPCODES[34] = Arithmetic::sub;
-		OPCODES[36] = Arithmetic::mul;
-		OPCODES[38] = Arithmetic::div;
+		OPCODES[33] = Arithmetic::sub;
+		OPCODES[34] = Arithmetic::mul;
+		OPCODES[35] = Arithmetic::div;
 	}
 
 	private void step() throws InterpretException {
