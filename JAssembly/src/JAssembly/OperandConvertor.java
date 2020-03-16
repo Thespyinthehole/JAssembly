@@ -2,13 +2,16 @@ package JAssembly;
 
 import java.util.Map;
 
+import JAssembly.Compiler.Constant;
+
 public class OperandConvertor {
-	public Short convertOperand(String operand, Map<String, String> constants, int lineNum) throws SyntaxException {
+	public Short convertOperand(String operand, Map<String, Constant> constants, int lineNum) throws SyntaxException {
 		if (operand.matches("[a-z]+")) {
-			String constant = constants.get(operand);
+			Constant constant = constants.get(operand);
 			if (constant == null)
 				throw new SyntaxException(lineNum, "Constant '" + operand + "' not found");
-			return convertOperand(constant, constants, lineNum);
+			constant.use();
+			return convertOperand(constant.getValue(), constants, lineNum);
 		}
 
 		if (operand.matches("-?[0-9]+"))

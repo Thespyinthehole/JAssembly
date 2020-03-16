@@ -14,7 +14,7 @@ import JAssembly.SyntaxException;
 
 public class AssemblyCompiler {
 
-	private Map<String, String> constants = new HashMap<>();
+	private Map<String, Constant> constants = new HashMap<>();
 	private boolean constant = true;
 	private int memloc = 0;
 	private OperandConvertor convertor = new OperandConvertor();
@@ -44,6 +44,11 @@ public class AssemblyCompiler {
 			List<Short> bytecode = compileLine(line, entry.getKey());
 			if (bytecode != null)
 				bytecodes.addAll(bytecode);
+		}
+
+		for (Entry<String, Constant> constant : constants.entrySet()) {
+			if (!constant.getValue().isUsed())
+				System.out.println("Warning: Constant '" + constant.getKey() + "' is not used");
 		}
 
 		writeToBinaryFile(bytecodes.toArray(new Short[0]), file);
@@ -122,7 +127,7 @@ public class AssemblyCompiler {
 		if (constants.containsKey(name))
 			throw new SyntaxException(lineNum, "Constant '" + name + "' declared twice");
 
-		constants.put(name, value);
+		constants.put(name, new Constant(value));
 		return "";
 	}
 
@@ -133,10 +138,10 @@ public class AssemblyCompiler {
 			if (constants.containsKey(lineName))
 				throw new SyntaxException(lineNum, "Constant '" + lineName + "' declared twice");
 
-			constants.put(lineName, String.valueOf(memloc));
+			constants.put(lineName, new Constant(String.valueOf(memloc)));
 			line = line.substring(index + 1).trim();
-			if(line.length() == 0)
-				throw new SyntaxException(lineNum,"Label '" + lineName + "' points to no instruction");
+			if (line.length() == 0)
+				throw new SyntaxException(lineNum, "Label '" + lineName + "' points to no instruction");
 		}
 		String[] split = line.split(" ");
 		memloc += split.length;
