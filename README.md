@@ -1,4 +1,3 @@
 # JAssembly
 
-## How to use
-`java -jar JAssembly.jar <filename>`
+## [Docs](https://thespyinthehole.github.io/JAssembly/index.html)
