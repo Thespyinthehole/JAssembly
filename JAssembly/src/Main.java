@@ -1,11 +1,9 @@
 import java.awt.BorderLayout;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 
 public class Main {
 

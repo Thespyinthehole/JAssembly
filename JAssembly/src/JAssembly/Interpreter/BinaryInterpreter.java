@@ -7,7 +7,7 @@ import JAssembly.InterpretException;
 
 public class BinaryInterpreter {
 
-	public void interpret(String[] lines) throws InterpretException {
+	public void interpret(String[] lines, int memory, int registers) throws InterpretException {
 		String code = extractCode(lines);
 		if (!code.matches("[01\\s]*"))
 			throw new InterpretException("Only accepts 0 or 1 in the file");
@@ -15,7 +15,7 @@ public class BinaryInterpreter {
 		List<Short> program = new ArrayList<>();
 		for (String datam : data)
 			program.add((short) Integer.parseInt(datam, 2));
-		CPU cpu = new CPU();
+		CPU cpu = new CPU(memory, registers);
 		cpu.loadIntoMemory(program);
 		cpu.execute();
 	}

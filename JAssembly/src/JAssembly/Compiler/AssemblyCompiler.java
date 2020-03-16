@@ -30,10 +30,10 @@ public class AssemblyCompiler {
 		opcodes.put("JMPZ", new Short[] { null, 5 });
 		opcodes.put("JMPL", new Short[] { null, 6 });
 		opcodes.put("JMPG", new Short[] { null, 7 });
-		opcodes.put("ADD", new Short[] { null, null, 32, 33 });
-		opcodes.put("SUB", new Short[] { null, null, 34, 35 });
-		opcodes.put("MUL", new Short[] { null, null, 36, 37 });
-		opcodes.put("DIV", new Short[] { null, null, 38, 39 });
+		opcodes.put("ADD", new Short[] { null, null, 32 });
+		opcodes.put("SUB", new Short[] { null, null, 34 });
+		opcodes.put("MUL", new Short[] { null, null, 36 });
+		opcodes.put("DIV", new Short[] { null, null, 38 });
 	}
 
 	public void compile(String[] lines, File file) throws SyntaxException, IOException {

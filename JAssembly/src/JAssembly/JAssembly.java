@@ -9,37 +9,102 @@ import JAssembly.Interpreter.BinaryInterpreter;
 
 public class JAssembly {
 	public static void main(String[] args) throws Exception {
-		if (args.length == 0)
-			throw new Exception("Please add a filename to parameters");
+		if (args.length == 0) {
+			printHelp();
+			return;
+		}
 
-		String filepath = args[0];
-		File f = new File(filepath);
-		filepath = f.getName();
-		int index = filepath.indexOf(".");
-		if (index == -1)
-			throw new Exception("Needs to be extension .jasm or .jb");
-
-		String ext = filepath.substring(index);
-		if (!(ext.equals(".jasm") || ext.equals(".jb")))
-			throw new Exception("Needs to be extension .jasm or .jb");
-
-		new JAssembly(f, ext);
+		String option = args[0];
+		String ext = null;
+		switch (option) {
+		case "-h":
+		case "-help":
+			printHelp();
+			return;
+		case "-c":
+			if (args.length == 1) {
+				System.err.println("No file parameter found. Please refer to the -help option.");
+				return;
+			}
+			ext = ".jasm";
+			break;
+		case "-r":
+			if (args.length == 1) {
+				System.err.println("No file parameter found. Please refer to the -help option.");
+				return;
+			}
+			ext = ".jb";
+			break;
+		default:
+			System.err.println("Option not found. Please refer to the -help option.");
+			return;
+		}
+		File f = null;
+		f = new File(args[1] + ext);
+		if (!f.exists()) {
+			System.err.println("No " + ext + " with that name exists in the location.");
+			return;
+		}
+		new JAssembly(f, ext, args);
 	}
 
-	public JAssembly(File file, String ext) throws SyntaxException, IOException, InterpretException {
+	public JAssembly(File file, String ext, String[] args) throws SyntaxException, IOException, InterpretException {
 		String[] lines = readLines(file);
-		String name = file.getName();
-		name = name.substring(0, name.indexOf("."));
 		if (ext.equals(".jasm")) {
 			AssemblyCompiler compiler = new AssemblyCompiler();
 			compiler.compile(lines, file);
 		} else {
 			BinaryInterpreter interpreter = new BinaryInterpreter();
-			interpreter.interpret(lines);
+			int registers = 8;
+			int memory = 1024;
+
+			if (args.length > 2) {
+				if (args.length % 2 != 0 && args.length <= 6) {
+					System.err.println("Invalid interpreter parameters. Please refer to the -help option.");
+					return;
+				}
+				for (int i = 2; i < args.length; i += 2) {
+					switch (args[i]) {
+					case "-regs":
+						try {
+							registers = Integer.valueOf(args[i + 1]);
+						} catch (NumberFormatException e) {
+							System.err.println("The -regs parameter needs a integer value.");
+							return;
+						}
+						break;
+					case "-mem":
+						try {
+							memory = Integer.valueOf(args[i + 1]);
+						} catch (NumberFormatException e) {
+							System.err.println("The -mem parameter needs a integer value.");
+							return;
+						}
+						break;
+					default:
+						System.err.println("Invalid interpreter parameters. Please refer to the -help option.");
+						return;
+					}
+				}
+			}
+
+			interpreter.interpret(lines, memory, registers);
 		}
 	}
 
-	String[] readLines(File file) throws IOException {
+	private String[] readLines(File file) throws IOException {
 		return Files.readAllLines(file.toPath()).stream().toArray(String[]::new);
+	}
+
+	private static void printHelp() {
+		System.out.println("This is the JAssembly function");
+		System.out.println("It will either compile a .jasm file, or interpret a .jb file");
+		System.out.println("\n Options:");
+		System.out.println("	-h   : Prints the help menu");
+		System.out.println("	-help: Prints the help menu");
+		System.out.println("	-c   : Followed by a file to compile,   do not include the extension");
+		System.out.println("	-r   : Followed by a file to interpret, do not include the extension");
+		System.out.println("			-regs : Followed by an integer to change the register count. Default: 8");
+		System.out.println("			-mem  : Followed by an integer to change the memory size.    Default: 1024");
 	}
 }

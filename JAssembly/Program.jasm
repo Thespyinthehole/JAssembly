@@ -16,19 +16,3 @@ JMP mult
 JMP end
 zero: LDR result 0
 end: HALT
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
