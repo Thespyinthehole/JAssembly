@@ -18,7 +18,7 @@ public class AssemblyCompiler {
 	private boolean constant = true;
 	private int memloc = 0;
 	private OperandConvertor convertor = new OperandConvertor();
-
+	private boolean lastJmp = false;
 	private static Map<String, Short[]> opcodes = new HashMap<String, Short[]>();
 
 	static {
@@ -161,6 +161,14 @@ public class AssemblyCompiler {
 		if (bytecode == null)
 			throw new SyntaxException(lineNum,
 					"Instruction '" + opcode + "' does not accept " + (split.length - 1) + " operands");
+
+		boolean jmp = opcode.equals("JMP");
+		
+		if (jmp && lastJmp) {
+			System.out.println("Warning: Unreachable code on line " + lineNum);
+		}
+		
+		lastJmp = jmp;
 
 		List<Short> instruction = new ArrayList<>();
 		instruction.add(bytecode);

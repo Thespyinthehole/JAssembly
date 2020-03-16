@@ -8,7 +8,7 @@ public class Memory {
 
 	private static OperandConvertor convertor = new OperandConvertor();
 
-	public static void mov(CPU cpu) {
+	public static boolean mov(CPU cpu) {
 		short param = cpu.readNext();
 		OperandType type = convertor.getType(param);
 		Short memloc = null;
@@ -17,7 +17,7 @@ public class Memory {
 		case REGISTER:
 			cpu.halt();
 			System.err.println("Intepret error at index '" + cpu.getIndex() + "': Can only move into memory");
-			return;
+			return false;
 		case MEMORY:
 			memloc = convertor.extractValue(param);
 			break;
@@ -27,21 +27,23 @@ public class Memory {
 		}
 
 		cpu.write(memloc, cpu.readNextValue());
+		return true;
 	}
 
-	public static void ldr(CPU cpu) {
+	public static boolean ldr(CPU cpu) {
 		short param = cpu.readNext();
 		OperandType type = convertor.getType(param);
 		if (type != OperandType.REGISTER) {
 			cpu.halt();
 			System.err.println("Intepret error at index '" + cpu.getIndex() + "': Can only load into registers");
-			return;
+			return false;
 		}
 
 		cpu.setRegister(convertor.extractValue(param), cpu.readNextValue());
+		return true;
 	}
 
-	public static void push(CPU cpu) {
+	public static boolean push(CPU cpu) {
 		short param1 = cpu.readNext();
 		OperandType type = convertor.getType(param1);
 		Short memloc = null;
@@ -50,7 +52,7 @@ public class Memory {
 			cpu.halt();
 			System.err.println("Intepret error at index '" + cpu.getIndex()
 					+ "': Can only push into a register or memory location");
-			return;
+			return false;
 		case MEMORY:
 			memloc = convertor.extractValue(param1);
 			break;
@@ -61,9 +63,10 @@ public class Memory {
 			short register = convertor.extractValue(param1);
 			short val = cpu.readNext();
 			cpu.setRegister(register, val);
-			return;
+			return true;
 		}
 
 		cpu.write(memloc, cpu.readNext());
+		return true;
 	}
 }

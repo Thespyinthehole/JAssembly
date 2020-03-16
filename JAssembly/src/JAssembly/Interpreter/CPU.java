@@ -2,7 +2,7 @@ package JAssembly.Interpreter;
 
 import java.lang.reflect.Array;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import JAssembly.InterpretException;
 import JAssembly.OperandConvertor;
@@ -25,7 +25,7 @@ public class CPU {
 	private OperandConvertor convertor = new OperandConvertor();
 
 	@SuppressWarnings("unchecked")
-	private final Consumer<CPU>[] OPCODES = (Consumer<CPU>[]) Array.newInstance(Consumer.class, 40);
+	private final Predicate<CPU>[] OPCODES = (Predicate<CPU>[]) Array.newInstance(Predicate.class, 40);
 
 	public CPU() {
 		this(1024, 8);
@@ -58,14 +58,10 @@ public class CPU {
 		OPCODES[5] = Jump::jumpZero;
 		OPCODES[6] = Jump::jumpLessThen;
 		OPCODES[7] = Jump::jumpGreaterThen;
-		OPCODES[32] = Arithmetic::add2;
-		OPCODES[33] = Arithmetic::add3;
-		OPCODES[34] = Arithmetic::sub2;
-		OPCODES[35] = Arithmetic::sub3;
-		OPCODES[36] = Arithmetic::mul2;
-		OPCODES[37] = Arithmetic::mul3;
-		OPCODES[38] = Arithmetic::div2;
-		OPCODES[39] = Arithmetic::div3;
+		OPCODES[32] = Arithmetic::add;
+		OPCODES[34] = Arithmetic::sub;
+		OPCODES[36] = Arithmetic::mul;
+		OPCODES[38] = Arithmetic::div;
 	}
 
 	private void step() throws InterpretException {
@@ -78,11 +74,16 @@ public class CPU {
 		if (val < 0 || val >= OPCODES.length)
 			throw new InterpretException(getIndex(), "'" + val + "' is not an instruction");
 
-		Consumer<CPU> opcode = OPCODES[val];
+		Predicate<CPU> opcode = OPCODES[val];
 		if (opcode == null)
 			throw new InterpretException(getIndex(), "'" + val + "' is not an instruction");
 
-		opcode.accept(this);
+		boolean success = opcode.test(this);
+		if(!success) {
+			halted = true;
+			return;
+		}
+			
 		if(!flagged) {
 			zero = false;
 			negative = false;

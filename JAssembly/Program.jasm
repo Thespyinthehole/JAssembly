@@ -1,5 +1,5 @@
 #a * b
-a = 10
+a = 0
 b = 40
 result = r2
 
@@ -12,7 +12,7 @@ ADD result r1
 mult: 	ADD result r1
 	SUB r0 1
 	JMPZ end
-JMP mult
-JMP end
-zero: LDR result 0
+	JMP mult
+	JMP end
+zero: LDR m0 0
 end: HALT

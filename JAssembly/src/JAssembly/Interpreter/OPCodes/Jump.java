@@ -9,7 +9,7 @@ public class Jump {
 
 	private static OperandConvertor convertor = new OperandConvertor();
 
-	private static void jumpTo(CPU cpu) {
+	private static boolean jumpTo(CPU cpu) {
 		short param = cpu.readNext();
 		OperandType type = convertor.getType(param);
 		short value = 0;
@@ -18,7 +18,7 @@ public class Jump {
 		case MEMORYSHIFT:
 			cpu.halt();
 			System.err.println("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
-			return;
+			return false;
 		case CONSTANT:
 			value = convertor.extractValue(param);
 			break;
@@ -27,33 +27,37 @@ public class Jump {
 		}
 
 		cpu.setPC(value);
+		return true;
 	}
 
-	public static void jump(CPU cpu) {
-		jumpTo(cpu);
+	public static boolean jump(CPU cpu) {
+		return jumpTo(cpu);
 	}
-	
-	public static void jumpZero(CPU cpu) {
+
+	public static boolean jumpZero(CPU cpu) {
 		if (cpu.getFlag(Flag.ZERO)) {
-			jumpTo(cpu);
+			return jumpTo(cpu);
 		} else {
 			cpu.readNext();
 		}
+		return true;
 	}
-	
-	public static void jumpLessThen(CPU cpu) {
+
+	public static boolean jumpLessThen(CPU cpu) {
 		if (cpu.getFlag(Flag.NEGATIVE)) {
-			jumpTo(cpu);
+			return jumpTo(cpu);
 		} else {
 			cpu.readNext();
 		}
+		return true;
 	}
-	
-	public static void jumpGreaterThen(CPU cpu) {
+
+	public static boolean jumpGreaterThen(CPU cpu) {
 		if (!(cpu.getFlag(Flag.NEGATIVE)|| cpu.getFlag(Flag.ZERO))) {
-			jumpTo(cpu);
+			return jumpTo(cpu);
 		} else {
 			cpu.readNext();
 		}
+		return true;
 	}
 }
