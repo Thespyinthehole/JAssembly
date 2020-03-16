@@ -48,11 +48,15 @@ public class JAssembly {
 		new JAssembly(f, ext, args);
 	}
 
-	public JAssembly(File file, String ext, String[] args) throws SyntaxException, IOException, InterpretException {
+	public JAssembly(File file, String ext, String[] args) throws IOException {
 		String[] lines = readLines(file);
 		if (ext.equals(".jasm")) {
 			AssemblyCompiler compiler = new AssemblyCompiler();
-			compiler.compile(lines, file);
+			try {
+				compiler.compile(lines, file);
+			} catch (SyntaxException e) {
+				System.out.println(e);
+			}
 		} else {
 			BinaryInterpreter interpreter = new BinaryInterpreter();
 			int registers = 8;
@@ -88,7 +92,11 @@ public class JAssembly {
 				}
 			}
 
-			interpreter.interpret(lines, memory, registers);
+			try {
+				interpreter.interpret(lines, memory, registers);
+			} catch (InterpretException e) {
+				System.out.println(e);
+			}
 		}
 	}
 
