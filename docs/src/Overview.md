@@ -61,5 +61,9 @@ This project uses Java and therefore you will require at least Java 8, as this p
 ### Tested Java Versions
 
 * 1.8.0_241
+* 1.8.0_222
+* 11.0.3-internal
+* 12.0.2-internal
+* openjdk 11.0.6 2020-01-14
 
 If you use a Java version that is not listed and it works, I would appreciate you letting me know so I can add it to the list.
