@@ -149,40 +149,42 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#overview" id="overview">Overview</a></h1>
-<p>This project consists of both an assembly compiler and a byte code interpreter. As this uses both, this means it is possible to write in assembly and byte code. Due to this, this documentation will contain both the assembly and byte code. </p>
-<p>The assembly code and byte code this project uses is of my own design and therefore be explained throughout this book. </p>
-<p>The byte code interpreter uses a system in which is pushes the program into shared memory, similar to the <a href="https://en.wikipedia.org/wiki/Von_Neumann_architecture">Von Neumann Architecture</a>, which means that during the code execution the program can be modified. This means that you are able to make <a href="https://en.wikipedia.org/wiki/Self-modifying_code">self-modifying code</a>, however I would only recommend this if you feel confident with the language and how the interpreter works, which I will explain later on.</p>
+<p>This project consists of both an assembly code compiler and a byte code interpreter. As this uses both, this means it is possible to write in assembly code and byte code. Due to this, this documentation will contain information about both the assembly code and byte code. </p>
+<p>The assembly code and byte code this project uses is of my design and therefore will be explained throughout this book. </p>
+<p>The byte code interpreter uses a system in which is loads the program into shared memory, similar to the <a href="https://en.wikipedia.org/wiki/Von_Neumann_architecture">Von Neumann Architecture</a>, which means that during the code execution the program can be modified. This means that you are able to make <a href="https://en.wikipedia.org/wiki/Self-modifying_code">self-modifying code</a>, however I would only recommend this if you feel confident with the language and how the interpreter works, which I will explain later on.</p>
+<p>The byte code uses memory cells of 16 bits, however the format of the operands results in the size being 14 bits. As this uses two's complement, the max range will be from -2<sup>13</sup> to 2<sup>13</sup>-1.</p>
 <h3><a class="header" href="#setting-up-a-project" id="setting-up-a-project">Setting up a project</a></h3>
-<p>To make an assembly file, you need make a file with the extension <code>.jasm</code>. This is a file type that the program looks for to compile assembly down to the byte code.
-To make a binary file from scratch, you need to make a file with the extension <code>.jb</code>. Again, this is a file type that the interpreter looks for.</p>
+<p>To make an assembly file, you will need make a file with the extension <code>.jasm</code>. </p>
+<p>To make a binary file, you need to make a file with the extension <code>.jb</code>. However if you compile the assembly code, file is automatically created.</p>
 <h3><a class="header" href="#compiling-a-file" id="compiling-a-file">Compiling a file</a></h3>
-<p>After downloading the jar file and creating your file, if you run the command <code>java -jar JAssembly.jar -c &lt;filename&gt;</code>, where file name is the name of your file excluding the extension.</p>
+<p>After downloading the jar file and creating your file, if you run the command <code>java -jar JAssembly.jar -c &lt;filename&gt;</code>, where file name is the name of your file excluding the extension, this will compile the assembly to byte code. The result will be in a file name <code>&lt;filename&gt;.jb</code>, replacing the current file, or making a new one if needed.</p>
 <p>For example, to compile a program called <code>Program.jasm</code>:</p>
 <pre><code>java -jar JAssembly.jar -c Program
 </code></pre>
 <h3><a class="header" href="#running-a-binary-file" id="running-a-binary-file">Running a binary file</a></h3>
 <p>This is similar to compiling a file except you use the command <code>java -jar JAssembly.jar -r &lt;filename&gt;</code>. </p>
 <p>For example, to run a program called <code>Program.jb</code>:</p>
-<pre><code>java -jar JAssembly.jar -c Program
+<pre><code>java -jar JAssembly.jar -r Program
 </code></pre>
-<p>This will run the byte code interpretter on the file <code>Program.jb</code> using the default memory size of 1024 and the default register count of 10. </p>
+<p>This will run the byte code interpreter on the file <code>Program.jb</code> using the default memory size of 1024 and the default register count of 8. </p>
 <p>If you want to change the memory size, you need to add the option <code>-mem</code> after the command.</p>
-<p>For example, to run a program called <code>Program.jb</code> with memory size 64:</p>
-<pre><code>java -jar JAssembly.jar -c Program -mem 64
+<p>For example, to run a program called <code>Program.jb</code> with memory size of 64:</p>
+<pre><code>java -jar JAssembly.jar -r Program -mem 64
 </code></pre>
 <p>There is a similar process to changing register count, but instead using the <code>-regs</code> option.</p>
-<p>For example, to run a program called <code>Program.jb</code> with register count 10:</p>
-<pre><code>java -jar JAssembly.jar -c Program -regs 10
+<p>For example, to run a program called <code>Program.jb</code> with register count of 10:</p>
+<pre><code>java -jar JAssembly.jar -r Program -regs 10
 </code></pre>
 <p>You are able to change both the register count and memory size by using both options. They can be used in any order.</p>
-<p>For example, to run a program called <code>Program.jb</code> with register count 10 and memory size 64:</p>
-<pre><code>java -jar JAssembly.jar -c Program -mem 64 -regs 10
+<p>For example, to run a program called <code>Program.jb</code> with register count of 10 and memory size of 64:</p>
+<pre><code>java -jar JAssembly.jar -r Program -mem 64 -regs 10
 </code></pre>
 <p>This can also be done by:</p>
-<pre><code>java -jar JAssembly.jar -c Program -regs 10 -mem 64
+<pre><code>java -jar JAssembly.jar -r Program -regs 10 -mem 64
 </code></pre>
+<h3><a class="header" href="#prerequisites" id="prerequisites">Prerequisites</a></h3>
+<p>This project uses Java and therefore you will require at least Java 8, as this project uses some Java 8 features.</p>
 <h3><a class="header" href="#tested-java-versions" id="tested-java-versions">Tested Java Versions</a></h3>
-<p>This project uses Java as a base and therefore you will require at least Java 8, as this project uses some Java 8 features.</p>
 <ul>
 <li>1.8.0_241</li>
 </ul>
