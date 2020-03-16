@@ -30,14 +30,13 @@ public class AssemblyCompiler {
 		opcodes.put("JMPL", new InstructionParser(10, new byte[] { 9 }));
 		opcodes.put("JMPG", new InstructionParser(11, new byte[] { 9 }));
 		opcodes.put("ADD", new InstructionParser(32, new byte[] { 8, 9 }));
-		opcodes.put("SUB", new InstructionParser(32, new byte[] { 8, 9 }));
-		opcodes.put("MUL", new InstructionParser(32, new byte[] { 8, 9 }));
-		opcodes.put("DIV", new InstructionParser(32, new byte[] { 8, 9 }));
+		opcodes.put("SUB", new InstructionParser(33, new byte[] { 8, 9 }));
+		opcodes.put("MUL", new InstructionParser(34, new byte[] { 8, 9 }));
+		opcodes.put("DIV", new InstructionParser(35, new byte[] { 8, 9 }));
 	}
 
 	public void compile(String[] lines, File file) throws SyntaxException, IOException {
 		Map<Integer, String> cleaned = cleanCodeAndExtractConstants(lines);
-
 		List<Short> bytecodes = new ArrayList<>();
 
 		for (Entry<Integer, String> entry : cleaned.entrySet()) {
@@ -136,6 +135,8 @@ public class AssemblyCompiler {
 
 			constants.put(lineName, String.valueOf(memloc));
 			line = line.substring(index + 1).trim();
+			if(line.length() == 0)
+				throw new SyntaxException(lineNum,"Label '" + lineName + "' points to no instruction");
 		}
 		String[] split = line.split(" ");
 		memloc += split.length;

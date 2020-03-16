@@ -31,22 +31,22 @@ public class InstructionParser {
 		case CONSTANT:
 			if ((params[index] & 1) != 1)
 				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a constant for operand " + index);
+						+ " is not expecting a constant for operand " + (index+1));
 			break;
 		case MEMORY:
 			if ((params[index] & 2) != 2)
 				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a memory address for operand " + index);
+						+ " is not expecting a memory address for operand " + (index+1));
 			break;
 		case MEMORYSHIFT:
 			if ((params[index] & 4) != 4)
 				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a memory shift for operand " + index);
+						+ " is not expecting a memory shift for operand " + (index+1));
 			break;
 		case REGISTER:
 			if ((params[index] & 8) != 8)
 				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a register for operand " + index);
+						+ " is not expecting a register for operand " + (index+1));
 			break;
 		}
 	}

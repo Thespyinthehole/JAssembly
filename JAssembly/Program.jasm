@@ -8,12 +8,11 @@ LDR r1 b
 SUB r0 1
 JMPL zero
 ADD result r1
-aa:
 mult: 	ADD result r1
 	SUB r0 1
 	JMPZ end
 	JMP mult
 
-zero: LDR r0 0
+zero: LDR result 0
 end: HALT
 
