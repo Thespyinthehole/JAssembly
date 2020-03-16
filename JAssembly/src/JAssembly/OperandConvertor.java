@@ -7,7 +7,7 @@ public class OperandConvertor {
 		if (operand.matches("[a-z]+")) {
 			String constant = constants.get(operand);
 			if (constant == null)
-				throw new SyntaxException(lineNum, "Constant '" + constant + "' not found");
+				throw new SyntaxException(lineNum, "Constant '" + operand + "' not found");
 			return convertOperand(constant, constants, lineNum);
 		}
 

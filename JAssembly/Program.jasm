@@ -13,6 +13,5 @@ mult: 	ADD result r1
 	SUB r0 1
 	JMPZ end
 	JMP mult
-	JMP end
 zero: LDR r0 0
 end: HALT
