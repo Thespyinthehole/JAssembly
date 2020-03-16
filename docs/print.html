@@ -160,28 +160,28 @@ To make a binary file from scratch, you need to make a file with the extension <
 <h3><a class="header" href="#compiling-a-file" id="compiling-a-file">Compiling a file</a></h3>
 <p>After downloading the jar file and creating your file, if you run the command <code>java -jar JAssembly.jar -c &lt;filename&gt;</code>, where file name is the name of your file excluding the extension.</p>
 <p>For example, to compile a program called <code>Program.jasm</code>:</p>
-<pre><code>`java -jar JAssembly.jar -c Program`
+<pre><code>java -jar JAssembly.jar -c Program
 </code></pre>
 <h3><a class="header" href="#running-a-binary-file" id="running-a-binary-file">Running a binary file</a></h3>
 <p>This is similar to compiling a file except you use the command <code>java -jar JAssembly.jar -r &lt;filename&gt;</code>. </p>
 <p>For example, to run a program called <code>Program.jb</code>:</p>
-<pre><code>`java -jar JAssembly.jar -c Program`
+<pre><code>java -jar JAssembly.jar -c Program
 </code></pre>
 <p>This will run the byte code interpretter on the file <code>Program.jb</code> using the default memory size of 1024 and the default register count of 10. </p>
 <p>If you want to change the memory size, you need to add the option <code>-mem</code> after the command.</p>
 <p>For example, to run a program called <code>Program.jb</code> with memory size 64:</p>
-<pre><code>`java -jar JAssembly.jar -c Program -mem 64`
+<pre><code>java -jar JAssembly.jar -c Program -mem 64
 </code></pre>
 <p>There is a similar process to changing register count, but instead using the <code>-regs</code> option.</p>
 <p>For example, to run a program called <code>Program.jb</code> with register count 10:</p>
-<pre><code>`java -jar JAssembly.jar -c Program -regs 10`
+<pre><code>java -jar JAssembly.jar -c Program -regs 10
 </code></pre>
 <p>You are able to change both the register count and memory size by using both options. They can be used in any order.</p>
 <p>For example, to run a program called <code>Program.jb</code> with register count 10 and memory size 64:</p>
-<pre><code>`java -jar JAssembly.jar -c Program -mem 64 -regs 10`
+<pre><code>java -jar JAssembly.jar -c Program -mem 64 -regs 10
 </code></pre>
 <p>This can also be done by:</p>
-<pre><code>`java -jar JAssembly.jar -c Program -regs 10 -mem 64`
+<pre><code>java -jar JAssembly.jar -c Program -regs 10 -mem 64
 </code></pre>
 <h3><a class="header" href="#tested-java-versions" id="tested-java-versions">Tested Java Versions</a></h3>
 <p>This project uses Java as a base and therefore you will require at least Java 8, as this project uses some Java 8 features.</p>
