@@ -10,12 +10,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import JAssembly.OperandConvertor;
+import JAssembly.OperandType;
 import JAssembly.SyntaxException;
 
 public class AssemblyCompiler {
 
 	private Map<String, Constant> constants = new HashMap<>();
+	private Map<Integer, Integer> memoryToLine = new HashMap<>();
 	private boolean constant = true;
+	private Map<Integer, Boolean> unusedLines = new HashMap<>();
 	private int memloc = 0;
 	private OperandConvertor convertor = new OperandConvertor();
 	private static Map<String, InstructionParser> opcodes = new HashMap<>();
@@ -51,7 +54,49 @@ public class AssemblyCompiler {
 				System.out.println("Warning: Constant '" + constant.getKey() + "' is not used");
 		}
 
+		findUnreachable(cleaned, 1);
+
+		for (Entry<Integer, Boolean> unused : unusedLines.entrySet()) {
+			if (unused.getValue())
+				System.out.println("Warning: Possible unreachable line at '" + unused.getKey() + "'");
+		}
+
 		writeToBinaryFile(bytecodes.toArray(new Short[0]), file);
+	}
+
+	private void findUnreachable(Map<Integer, String> lines, int lineNum) throws SyntaxException {
+		String line = lines.get(lineNum);
+		if (!unusedLines.containsKey(lineNum))
+			return;
+
+		if (line.length() == 0) {
+			findUnreachable(lines, lineNum + 1);
+			return;
+		}
+
+		String[] values = line.split(" ");
+		String opcode = values[0];
+		unusedLines.put(lineNum, false);
+		switch (opcode) {
+		case "HALT":
+			return;
+		case "JMP":
+			short operand = convertor.convertOperand(values[1], constants, lineNum);
+			if (convertor.getType(operand) != OperandType.CONSTANT)
+				return;
+			short value = convertor.extractValue(operand);
+			findUnreachable(lines, memoryToLine.get((int) value) + 1);
+			return;
+
+		}
+		if (opcode.matches("JMP(Z|L|G)")) {
+			short operand = convertor.convertOperand(values[1], constants, lineNum);
+			if (convertor.getType(operand) != OperandType.CONSTANT)
+				return;
+			short value = convertor.extractValue(operand);
+			findUnreachable(lines, memoryToLine.get((int) value) + 1);
+		}
+		findUnreachable(lines, lineNum + 1);
 	}
 
 	private void writeToBinaryFile(Short[] bytecodes, File file) throws IOException {
@@ -122,10 +167,10 @@ public class AssemblyCompiler {
 			throw new SyntaxException(lineNum, "No name for the value '" + value + "' was found");
 
 		if (!name.matches("[a-z]+"))
-			throw new SyntaxException(lineNum, "constant '" + name + "' needs to be in all lower case");
+			throw new SyntaxException(lineNum, "Constant '" + name + "' needs to be in all lower case");
 
 		if (!value.matches("(r|(m[+-]?))?[0-9]+"))
-			throw new SyntaxException(lineNum, "operand '" + value + "' needs to be a operand");
+			throw new SyntaxException(lineNum, "Operand '" + value + "' needs to be a operand");
 
 		if (constants.containsKey(name))
 			throw new SyntaxException(lineNum, "Constant '" + name + "' declared twice");
@@ -148,6 +193,8 @@ public class AssemblyCompiler {
 		}
 		String[] split = line.split(" ");
 		memloc += split.length;
+		memoryToLine.put(memloc, lineNum);
+		unusedLines.put(lineNum, true);
 		return line;
 	}
 
@@ -172,6 +219,7 @@ public class AssemblyCompiler {
 			params.checkParam(i - 1, operand, lineNum, opcode);
 			instruction.add(operand);
 		}
+
 		return instruction;
 	}
 
