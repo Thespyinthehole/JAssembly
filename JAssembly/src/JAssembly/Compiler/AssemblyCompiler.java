@@ -58,7 +58,7 @@ public class AssemblyCompiler {
 		String filename = file.getName();
 		int index = filename.indexOf(".");
 		filename = filename.substring(0, index) + ".jb";
-		File binaryFile = new File(filename);
+		File binaryFile = new File(file.getParentFile(), filename);
 		if (binaryFile.exists())
 			binaryFile.delete();
 		binaryFile.createNewFile();
@@ -117,6 +117,9 @@ public class AssemblyCompiler {
 
 		String name = split[0].trim();
 		String value = split[1].trim();
+
+		if (name.length() == 0)
+			throw new SyntaxException(lineNum, "No name for the value '" + value + "' was found");
 
 		if (!name.matches("[a-z]+"))
 			throw new SyntaxException(lineNum, "constant '" + name + "' needs to be in all lower case");

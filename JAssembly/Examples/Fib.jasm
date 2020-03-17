@@ -1,0 +1,14 @@
+a=1
+b=1
+iter = 10
+LDR r0 a
+LDR r1 b
+LDR r2 iter
+fib:    LDR r3 r0
+        ADD r3 r1
+        LDR r1 r0
+        LDR r0 r3
+        SUB r2 1
+        JMPL end
+        JMP fib
+end:    HALT
