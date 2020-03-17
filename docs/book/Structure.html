@@ -81,7 +81,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div id="sidebar-scrollbox" class="sidebar-scrollbox">
-                <ol class="chapter"><li class="expanded affix "><a href="Overview.html">Overview</a></li><li class="expanded "><a href="Structure.html" class="active"><strong aria-hidden="true">1.</strong> Structure</a></li><li><ol class="section"><li class="expanded "><a href="Variables.html"><strong aria-hidden="true">1.1.</strong> Variables</a></li><li class="expanded "><a href="Instructions.html"><strong aria-hidden="true">1.2.</strong> Instructions</a></li><li class="expanded "><a href="Commenting.html"><strong aria-hidden="true">1.3.</strong> Commenting</a></li></ol></li><li class="expanded "><a href="Operands.html"><strong aria-hidden="true">2.</strong> Operands</a></li><li><ol class="section"><li class="expanded "><a href="Registers.html"><strong aria-hidden="true">2.1.</strong> Registers</a></li><li class="expanded "><a href="Memory.html"><strong aria-hidden="true">2.2.</strong> Memory</a></li><li class="expanded "><a href="MemoryOffset.html"><strong aria-hidden="true">2.3.</strong> Memory Offset</a></li><li class="expanded "><a href="Constants.html"><strong aria-hidden="true">2.4.</strong> Constants</a></li></ol></li><li class="expanded "><a href="Opcodes.html"><strong aria-hidden="true">3.</strong> Opcodes</a></li><li><ol class="section"><li class="expanded "><a href="Halt.html"><strong aria-hidden="true">3.1.</strong> HALT</a></li><li class="expanded "><a href="Mov.html"><strong aria-hidden="true">3.2.</strong> MOV</a></li><li class="expanded "><a href="Ldr.html"><strong aria-hidden="true">3.3.</strong> LDR</a></li><li class="expanded "><a href="Push.html"><strong aria-hidden="true">3.4.</strong> PUSH</a></li></ol></li></ol>
+                <ol class="chapter"><li class="expanded affix "><a href="Overview.html">Overview</a></li><li class="expanded "><a href="Structure.html" class="active"><strong aria-hidden="true">1.</strong> Structure</a></li><li><ol class="section"><li class="expanded "><a href="Constants.html"><strong aria-hidden="true">1.1.</strong> Constants</a></li><li class="expanded "><a href="Instructions.html"><strong aria-hidden="true">1.2.</strong> Instructions</a></li><li><ol class="section"><li class="expanded "><a href="Labels.html"><strong aria-hidden="true">1.2.1.</strong> Labels</a></li></ol></li><li class="expanded "><a href="Commenting.html"><strong aria-hidden="true">1.3.</strong> Commenting</a></li></ol></li><li class="expanded "><a href="Operands.html"><strong aria-hidden="true">2.</strong> Operands</a></li><li><ol class="section"><li class="expanded "><a href="Registers.html"><strong aria-hidden="true">2.1.</strong> Registers</a></li><li class="expanded "><a href="Memory.html"><strong aria-hidden="true">2.2.</strong> Memory</a></li><li class="expanded "><a href="MemoryOffset.html"><strong aria-hidden="true">2.3.</strong> Memory Offset</a></li><li class="expanded "><a href="Constants.html"><strong aria-hidden="true">2.4.</strong> Constants</a></li></ol></li><li class="expanded "><a href="Opcodes.html"><strong aria-hidden="true">3.</strong> Opcodes</a></li><li><ol class="section"><li class="expanded "><a href="Halt.html"><strong aria-hidden="true">3.1.</strong> HALT</a></li><li class="expanded "><a href="Mov.html"><strong aria-hidden="true">3.2.</strong> MOV</a></li><li class="expanded "><a href="Ldr.html"><strong aria-hidden="true">3.3.</strong> LDR</a></li><li class="expanded "><a href="Push.html"><strong aria-hidden="true">3.4.</strong> PUSH</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -150,60 +150,7 @@
                     <main>
                         <h1><a class="header" href="#structure" id="structure">Structure</a></h1>
 <p>This section will describe the main overview of how to structure the assembly code. It will talk about where to put different things and some basic knowledge about the language</p>
-<h3><a class="header" href="#main-structure" id="main-structure">Main Structure</a></h3>
 <p>The structure of the assembly code consists of two parts. The first part is the constant declaration, which is then followed by the main code base. This means that all your constant values need to be defined first, this is due to the way the language is compile in which is does two passes over the code. The first pass is to remove all comments and white spaces as well as replace all constants with their respective value, the second is then used to change the assembly code into byte code.</p>
-<h3><a class="header" href="#constant-declaration" id="constant-declaration">Constant Declaration</a></h3>
-<p>All constants will be equal to an <code>&lt;operand&gt;</code> value, which will be explained later on, and the constant needs to have a name. The name given needs to be all lower case and can only contain alphabetical characters. The format of a constant declaration is: <code>&lt;name&gt; = &lt;operand&gt;</code>, there can be as much or as little white space between the <code>=</code> and the <code>&lt;name&gt;</code> and <code>&lt;operand&gt;</code>.</p>
-<h4><a class="header" href="#examples" id="examples">Examples</a></h4>
-<h5><a class="header" href="#declaration" id="declaration">Declaration</a></h5>
-<ul>
-<li>
-<p><code>result = r0</code></p>
-</li>
-<li>
-<p><code>x = 5</code></p>
-</li>
-<li>
-<p><code>storage = m0</code></p>
-</li>
-</ul>
-<h5><a class="header" href="#usage" id="usage">Usage</a></h5>
-<ul>
-<li>
-<p><code>LDR result 0</code></p>
-</li>
-<li>
-<p><code>ADD r0 x</code></p>
-</li>
-<li>
-<p><code>MOV storage 10</code></p>
-</li>
-</ul>
-<h3><a class="header" href="#code-base" id="code-base">Code base</a></h3>
-<p>The code base is made up of line seperated instructions, with each instruction being made up of an opcode followed by operands. The number of operands will be determined by the opcode, which will be explain later on. The opcode and operands need to be white space seperated, you can use as much or as little white space as needed. The format of an instruction is: <code>&lt;opcode&gt; &lt;operand&gt; &lt;operand&gt;</code>, where the operands are optional.</p>
-<h4><a class="header" href="#examples-1" id="examples-1">Examples</a></h4>
-<ul>
-<li>
-<p><code>MOV m0 10</code></p>
-</li>
-<li>
-<p><code>ADD r0 5</code></p>
-</li>
-<li>
-<p><code>HALT</code></p>
-</li>
-</ul>
-<h3><a class="header" href="#commenting" id="commenting">Commenting</a></h3>
-<p>In the <code>.jasm</code> file, you are able to comment the code by using <code>#</code>. This will comment out everything on the current line after the symbol. Comments can also take up the whole line as well. These can be in any section of the file including both the constant declaration and main code sections.</p>
-<h4><a class="header" href="#examples-2" id="examples-2">Examples</a></h4>
-<ul>
-<li>
-<p><code>MOV m0 10 #Moves 10 into memory location 0</code></p>
-</li>
-<li>
-<p><code>#This line does nothing</code></p>
-</li>
-</ul>
 
                     </main>
 
@@ -216,7 +163,7 @@
                         
 
                         
-                            <a rel="next" href="Variables.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="Constants.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -234,7 +181,7 @@
                 
 
                 
-                    <a href="Variables.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a href="Constants.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 

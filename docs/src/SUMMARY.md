@@ -3,8 +3,9 @@
 [Overview](./Overview.md)
 
 - [Structure](./Structure.md)
-    - [Variables](./Variables.md)
+    - [Constants](./Constants.md)
     - [Instructions](./Instructions.md)
+        - [Labels](./Labels.md)
     - [Commenting](./Commenting.md)
      
 - [Operands](./Operands.md)
