@@ -66,13 +66,15 @@ public class AssemblyCompiler {
 
 	private void findUnreachable(Map<Integer, String> lines, int lineNum) throws SyntaxException {
 		String line = lines.get(lineNum);
-		if (!unusedLines.containsKey(lineNum))
-			return;
 
 		if (line.length() == 0) {
 			findUnreachable(lines, lineNum + 1);
 			return;
 		}
+
+		if (!(unusedLines.containsKey(lineNum) && unusedLines.get(lineNum))) 
+			return;
+		
 
 		String[] values = line.split(" ");
 		String opcode = values[0];
