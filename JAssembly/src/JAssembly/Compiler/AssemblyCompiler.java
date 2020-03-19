@@ -190,6 +190,9 @@ public class AssemblyCompiler {
 			if (constants.containsKey(lineName))
 				throw new SyntaxException(lineNum, "Constant '" + lineName + "' declared twice");
 
+			if (!lineName.matches("[a-z]+"))
+				throw new SyntaxException(lineNum, "Label '" + lineName + "' can only be lower case");
+
 			constants.put(lineName, new Constant(String.valueOf(memloc)));
 			line = line.substring(index + 1).trim();
 			if (line.length() == 0)

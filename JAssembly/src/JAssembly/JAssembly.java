@@ -72,6 +72,10 @@ public class JAssembly {
 					case "-regs":
 						try {
 							registers = Integer.valueOf(args[i + 1]);
+							if (registers < 0 || registers >= 256) {
+								System.err.println("The -regs parameter needs to be between 0 and 256.");
+								return;
+							}
 						} catch (NumberFormatException e) {
 							System.err.println("The -regs parameter needs a integer value.");
 							return;
@@ -80,6 +84,10 @@ public class JAssembly {
 					case "-mem":
 						try {
 							memory = Integer.valueOf(args[i + 1]);
+							if (memory < 0 || memory >= 81) {
+								System.err.println("The -mem parameter needs to be between 0 and 256.");
+								return;
+							}
 						} catch (NumberFormatException e) {
 							System.err.println("The -mem parameter needs a integer value.");
 							return;
