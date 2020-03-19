@@ -7,11 +7,10 @@ import JAssembly.Interpreter.Flag;
 
 public class Jump {
 
-	private static OperandConvertor convertor = new OperandConvertor();
 
 	private static boolean jumpTo(CPU cpu) {
 		short param = cpu.readNext();
-		OperandType type = convertor.getType(param);
+		OperandType type = OperandConvertor.getType(param);
 		short value = 0;
 		switch (type) {
 		case MEMORY:
@@ -20,10 +19,10 @@ public class Jump {
 			System.err.println("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
 			return false;
 		case CONSTANT:
-			value = convertor.extractValue(param);
+			value = OperandConvertor.extractValue(param);
 			break;
 		case REGISTER:
-			value = cpu.getRegister(convertor.extractValue(param));
+			value = cpu.getRegister(OperandConvertor.extractValue(param));
 		}
 
 		cpu.setPC(value);

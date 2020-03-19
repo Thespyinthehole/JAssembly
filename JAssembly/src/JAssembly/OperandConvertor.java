@@ -5,7 +5,7 @@ import java.util.Map;
 import JAssembly.Compiler.Constant;
 
 public class OperandConvertor {
-	public Short convertOperand(String operand, Map<String, Constant> constants, int lineNum) throws SyntaxException {
+	public static Short convertOperand(String operand, Map<String, Constant> constants, int lineNum) throws SyntaxException {
 		if (operand.matches("[a-z]+")) {
 			Constant constant = constants.get(operand);
 			if (constant == null)
@@ -40,7 +40,7 @@ public class OperandConvertor {
 		throw new SyntaxException(lineNum, "Invalid form for operand '" + operand + "'");
 	}
 
-	public String convertToBinaryString(Short value) {
+	public static String convertToBinaryString(Short value) {
 		String binary = Integer.toBinaryString(value);
 		int diff = 16 - binary.length();
 		if (diff > 0) {
@@ -53,7 +53,7 @@ public class OperandConvertor {
 		return binary;
 	}
 
-	public short extractValue(short value) {
+	public static short extractValue(short value) {
 		short stripper = (short) 0b0011111111111111;
 		short stripped = (short) (value & stripper);
 		short total = 0;
@@ -77,7 +77,7 @@ public class OperandConvertor {
 		return total;
 	}
 
-	public OperandType getType(short operand) {
+	public static OperandType getType(short operand) {
 		short memory = (short) 0b0100000000000000;
 		short register = (short) 0b1100000000000000;
 		short stripped = (short) (operand & register);
@@ -94,7 +94,7 @@ public class OperandConvertor {
 		return OperandType.MEMORYSHIFT;
 	}
 
-	private short convertToBytes(String data) {
+	private static short convertToBytes(String data) {
 		short value = Short.valueOf(data);
 		int val = (int) Math.pow(2, 13);
 		if (Math.abs(value) >= val)

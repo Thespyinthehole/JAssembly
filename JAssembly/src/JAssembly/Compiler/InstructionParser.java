@@ -1,53 +1,49 @@
 package JAssembly.Compiler;
 
+import java.util.EnumSet;
+
 import JAssembly.OperandConvertor;
 import JAssembly.OperandType;
 
-public class InstructionParser {
+@SuppressWarnings("unchecked")
+public enum InstructionParser {
+	HALT(0), 
+	MOV(1, EnumSet.of(OperandType.MEMORY, OperandType.MEMORYSHIFT), EnumSet.allOf(OperandType.class)),
+	LDR(2, EnumSet.of(OperandType.REGISTER), EnumSet.allOf(OperandType.class)),
+	PUSH(3, EnumSet.of(OperandType.REGISTER), EnumSet.allOf(OperandType.class)),
+	JMP(8, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	JMPZ(9, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	JMPL(10, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	JMPG(11, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	ADD(32, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	SUB(33, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	MUL(34, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	DIV(35, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT));
 
-	private OperandConvertor convertor = new OperandConvertor();
+	// Parameters
+	short opcode;
+	EnumSet<OperandType>[] params;
 
-	// Form: 0001 constant, 0010 memory, 0100 memory shift, 1000 register. Can be
-	// combined
-	private byte[] params;
-	private short opcode;
-
-	public InstructionParser(int index, byte[] params) {
+	// Constructors
+	InstructionParser(int opcode, EnumSet<OperandType>... params) {
+		this.opcode = (short)opcode;
 		this.params = params;
-		this.opcode = (short) index;
-	}
-
-	public int getParamCount() {
-		return params.length;
 	}
 
 	public short getOpcode() {
 		return opcode;
 	}
-
-	public void checkParam(int index, short param, int lineNum, String opcode) {
-		OperandType type = convertor.getType(param);
-		switch (type) {
-		case CONSTANT:
-			if ((params[index] & 1) != 1)
-				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a constant for operand " + (index+1));
-			break;
-		case MEMORY:
-			if ((params[index] & 2) != 2)
-				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a memory address for operand " + (index+1));
-			break;
-		case MEMORYSHIFT:
-			if ((params[index] & 4) != 4)
-				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a memory shift for operand " + (index+1));
-			break;
-		case REGISTER:
-			if ((params[index] & 8) != 8)
-				System.out.println("Warning: OPCode '" + opcode + "' on line " + lineNum
-						+ " is not expecting a register for operand " + (index+1));
-			break;
+	
+	public int getParamCount() {
+		return params.length;
+	}
+	
+	public void checkParam(int index, short param, int lineNum) {
+		EnumSet<OperandType> paramToCheck = params[index];
+		OperandType type = OperandConvertor.getType(param);
+		if (!paramToCheck.contains(type)) {
+			System.out.println("Warning: OPCode '" + this + "' on line " + lineNum
+					+ " is not expecting a constant for operand " + (index + 1));
 		}
 	}
 }

@@ -9,18 +9,16 @@ import JAssembly.Interpreter.Flag;
 
 public class Arithmetic {
 
-	private static OperandConvertor convertor = new OperandConvertor();
-
 	private static boolean operation(CPU cpu, BiFunction<Short, Short, Short> function) {
 		short param = cpu.readNext();
 
-		if (convertor.getType(param) != OperandType.REGISTER) {
+		if (OperandConvertor.getType(param) != OperandType.REGISTER) {
 			cpu.halt();
 			System.err.println("Intepret error at index '" + cpu.getIndex() + "': Can only load into registers");
 			return false;
 		}
 
-		short register = convertor.extractValue(param);
+		short register = OperandConvertor.extractValue(param);
 
 		Short v1 = cpu.getRegister(register);
 		Short v2 = getNextParam(cpu);
@@ -40,12 +38,12 @@ public class Arithmetic {
 	private static Short getNextParam(CPU cpu) {
 		short param = cpu.readNext();
 
-		OperandType type = convertor.getType(param);
+		OperandType type = OperandConvertor.getType(param);
 
 		if (type == OperandType.CONSTANT)
-			return convertor.extractValue(param);
+			return OperandConvertor.extractValue(param);
 		if (type == OperandType.REGISTER)
-			return cpu.getRegister(convertor.extractValue(param));
+			return cpu.getRegister(OperandConvertor.extractValue(param));
 
 		cpu.halt();
 		System.err.println("Cannot directly access memory at index: '" + cpu.getIndex() + "'");

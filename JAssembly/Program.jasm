@@ -1,3 +1,3 @@
 zeroconstant = 0
 
-LDR r0 zeroconstant
+end2: LDR r0 zeroconstant

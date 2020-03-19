@@ -22,8 +22,6 @@ public class CPU {
 	private boolean halted = false;
 	private boolean flagged = false;
 
-	private OperandConvertor convertor = new OperandConvertor();
-
 	@SuppressWarnings("unchecked")
 	private final Predicate<CPU>[] OPCODES = (Predicate<CPU>[]) Array.newInstance(Predicate.class, 40);
 
@@ -119,18 +117,18 @@ public class CPU {
 
 	public short readNextValue() {
 		short param = readNext();
-		OperandType type = convertor.getType(param);
+		OperandType type = OperandConvertor.getType(param);
 		Short memloc = null;
 		switch (type) {
 		case CONSTANT:
-			return convertor.extractValue(param);
+			return OperandConvertor.extractValue(param);
 		case MEMORY:
-			memloc = convertor.extractValue(param);
+			memloc = OperandConvertor.extractValue(param);
 			return read(memloc);
 		case MEMORYSHIFT:
 			return read(memoryShift(param));
 		case REGISTER:
-			short register = convertor.extractValue(param);
+			short register = OperandConvertor.extractValue(param);
 			return getRegister(register);
 		}
 		return 0;
@@ -157,7 +155,7 @@ public class CPU {
 	}
 
 	public short memoryShift(short param) {
-		short memloc = (short) (convertor.extractValue(param) + pc - 1);
+		short memloc = (short) (OperandConvertor.extractValue(param) + pc - 1);
 		return mod(memloc, (short) memory.length);
 	}
 

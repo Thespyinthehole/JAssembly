@@ -20,23 +20,6 @@ public class AssemblyCompiler {
 	private boolean constant = true;
 	private Map<Integer, Boolean> unusedLines = new HashMap<>();
 	private int memloc = 0;
-	private OperandConvertor convertor = new OperandConvertor();
-	private static Map<String, InstructionParser> opcodes = new HashMap<>();
-
-	static {
-		opcodes.put("HALT", new InstructionParser(0, new byte[] {}));
-		opcodes.put("MOV", new InstructionParser(1, new byte[] { 6, 15 }));
-		opcodes.put("LDR", new InstructionParser(2, new byte[] { 8, 15 }));
-		opcodes.put("PUSH", new InstructionParser(3, new byte[] { 8, 15 }));
-		opcodes.put("JMP", new InstructionParser(8, new byte[] { 9 }));
-		opcodes.put("JMPZ", new InstructionParser(9, new byte[] { 9 }));
-		opcodes.put("JMPL", new InstructionParser(10, new byte[] { 9 }));
-		opcodes.put("JMPG", new InstructionParser(11, new byte[] { 9 }));
-		opcodes.put("ADD", new InstructionParser(32, new byte[] { 8, 9 }));
-		opcodes.put("SUB", new InstructionParser(33, new byte[] { 8, 9 }));
-		opcodes.put("MUL", new InstructionParser(34, new byte[] { 8, 9 }));
-		opcodes.put("DIV", new InstructionParser(35, new byte[] { 8, 9 }));
-	}
 
 	public void compile(String[] lines, File file) throws SyntaxException, IOException {
 		Map<Integer, String> cleaned = cleanCodeAndExtractConstants(lines);
@@ -84,19 +67,19 @@ public class AssemblyCompiler {
 		case "HALT":
 			return;
 		case "JMP":
-			short operand = convertor.convertOperand(values[1], constants, lineNum);
-			if (convertor.getType(operand) != OperandType.CONSTANT)
+			short operand = OperandConvertor.convertOperand(values[1], constants, lineNum);
+			if (OperandConvertor.getType(operand) != OperandType.CONSTANT)
 				return;
-			short value = convertor.extractValue(operand);
+			short value = OperandConvertor.extractValue(operand);
 			findUnreachable(lines, memoryToLine.get((int) value) + 1);
 			return;
 
 		}
 		if (opcode.matches("JMP(Z|L|G)")) {
-			short operand = convertor.convertOperand(values[1], constants, lineNum);
-			if (convertor.getType(operand) != OperandType.CONSTANT)
+			short operand = OperandConvertor.convertOperand(values[1], constants, lineNum);
+			if (OperandConvertor.getType(operand) != OperandType.CONSTANT)
 				return;
-			short value = convertor.extractValue(operand);
+			short value = OperandConvertor.extractValue(operand);
 			findUnreachable(lines, memoryToLine.get((int) value) + 1);
 		}
 		findUnreachable(lines, lineNum + 1);
@@ -114,7 +97,7 @@ public class AssemblyCompiler {
 		StringBuilder builder = new StringBuilder();
 		int val = 0;
 		for (Short bytecode : bytecodes)
-			builder.append(convertor.convertToBinaryString(bytecode) + ((++val % 3 == 0) ? "\n" : " "));
+			builder.append(OperandConvertor.convertToBinaryString(bytecode) + ((++val % 3 == 0) ? "\n" : " "));
 		builder.deleteCharAt(builder.length() - 1);
 
 		FileWriter writer = new FileWriter(binaryFile);
@@ -210,7 +193,7 @@ public class AssemblyCompiler {
 			return null;
 		String[] split = line.split(" ");
 		String opcode = split[0];
-		InstructionParser params = opcodes.get(opcode);
+		InstructionParser params = InstructionParser.valueOf(opcode);
 		if (params == null)
 			throw new SyntaxException(lineNum, "Instruction '" + opcode + "' not found");
 
@@ -222,8 +205,8 @@ public class AssemblyCompiler {
 		instruction.add(params.getOpcode());
 
 		for (int i = 1; i < split.length; i++) {
-			short operand = convertor.convertOperand(split[i], constants, lineNum);
-			params.checkParam(i - 1, operand, lineNum, opcode);
+			short operand = OperandConvertor.convertOperand(split[i], constants, lineNum);
+			params.checkParam(i - 1, operand, lineNum);
 			instruction.add(operand);
 		}
 
