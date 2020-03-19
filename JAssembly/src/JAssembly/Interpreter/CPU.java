@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import JAssembly.InterpretException;
 import JAssembly.OperandConvertor;
 import JAssembly.OperandType;
-import JAssembly.Compiler.InstructionParser;
+import JAssembly.Compiler.Instruction;
 
 public class CPU {
 
@@ -47,7 +47,7 @@ public class CPU {
 	}
 
 	private void initOPCodes() {
-		Arrays.stream(InstructionParser.values())
+		Arrays.stream(Instruction.values())
 			.filter(p -> p.getOpcodePredicate() != null)
 			.forEach(p -> OPCODES[p.getOpcode()] = p.getOpcodePredicate());
 	}

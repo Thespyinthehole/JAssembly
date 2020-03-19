@@ -195,7 +195,7 @@ public class AssemblyCompiler {
 			return null;
 		String[] split = line.split(" ");
 		String opcode = split[0];
-		InstructionParser params = InstructionParser.valueOf(opcode);
+		Instruction params = Instruction.valueOf(opcode);
 		if (params == null)
 			throw new SyntaxException(lineNum, "Instruction '" + opcode + "' not found");
 

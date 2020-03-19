@@ -11,7 +11,7 @@ import JAssembly.Interpreter.OPCodes.Jump;
 import JAssembly.Interpreter.OPCodes.Memory;
 
 @SuppressWarnings("unchecked")
-public enum InstructionParser {
+public enum Instruction {
 	
 	HALT((short) 0, null), 
 	MOV((short)  1, Memory::mov, EnumSet.of(OperandType.MEMORY, OperandType.MEMORYSHIFT), EnumSet.allOf(OperandType.class)),
@@ -32,7 +32,7 @@ public enum InstructionParser {
 	EnumSet<OperandType>[] params;
 
 	// Constructors
-	InstructionParser(short opcode, Predicate<CPU> opcodePredicate, EnumSet<OperandType>... params) {
+	Instruction(short opcode, Predicate<CPU> opcodePredicate, EnumSet<OperandType>... params) {
 		this.opcode = opcode;
 		this.opcodePredicate = opcodePredicate;
 		this.params = params;
