@@ -20,7 +20,7 @@ public class AssemblyCompiler {
 	private boolean constant = true;
 	private Map<Integer, Boolean> unusedLines = new HashMap<>();
 	private int memloc = 0;
-	private OperandConvertor convertor = new OperandConvertor();
+	private OperandConvert re or convertor = new OperandConvertor();
 	private static Map<String, InstructionParser> opcodes = new HashMap<>();
 
 	static {
@@ -66,7 +66,9 @@ public class AssemblyCompiler {
 
 	private void findUnreachable(Map<Integer, String> lines, int lineNum) throws SyntaxException {
 		String line = lines.get(lineNum);
-
+ 
+                if(line == null)
+                 return;
 		if (line.length() == 0) {
 			findUnreachable(lines, lineNum + 1);
 			return;
