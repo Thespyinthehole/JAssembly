@@ -1,8 +1,8 @@
 package JAssembly.Compiler;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,11 +99,13 @@ public class AssemblyCompiler {
 		for (Short bytecode : bytecodes)
 			builder.append(OperandConvertor.convertToBinaryString(bytecode) + ((++val % 3 == 0) ? "\n" : " "));
 		builder.deleteCharAt(builder.length() - 1);
+		
+		Files.writeString(binaryFile.toPath(), builder.toString());
 
-		FileWriter writer = new FileWriter(binaryFile);
-		writer.write(builder.toString());
-		writer.flush();
-		writer.close();
+//		FileWriter writer = new FileWriter(binaryFile);
+//		writer.write(builder.toString());
+//		writer.flush();
+//		writer.close();
 	}
 
 	private Map<Integer, String> cleanCodeAndExtractConstants(String[] lines) throws SyntaxException {

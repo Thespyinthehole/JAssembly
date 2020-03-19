@@ -37,35 +37,28 @@ public class Arithmetic {
 
 	private static Short getNextParam(CPU cpu) {
 		short param = cpu.readNext();
-
-		OperandType type = OperandConvertor.getType(param);
-
-		if (type == OperandType.CONSTANT)
+		switch(OperandConvertor.getType(param)) {
+		case CONSTANT:
 			return OperandConvertor.extractValue(param);
-		if (type == OperandType.REGISTER)
+		case REGISTER:
 			return cpu.getRegister(OperandConvertor.extractValue(param));
-
-		cpu.halt();
-		System.err.println("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
-		return null;
+		default:
+			cpu.halt();
+			System.err.println("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
+			return null;
+		}
 	}
 
 	public static boolean add(CPU cpu) {
-		return operation(cpu, (a, b) -> {
-			return (short) (a + b);
-		});
+		return operation(cpu, (a, b) -> (short) (a + b));
 	}
 
 	public static boolean sub(CPU cpu) {
-		return operation(cpu, (a, b) -> {
-			return (short) (a - b);
-		});
+		return operation(cpu, (a, b) -> (short) (a - b));
 	}
 
 	public static boolean mul(CPU cpu) {
-		return operation(cpu, (a, b) -> {
-			return (short) (a * b);
-		});
+		return operation(cpu, (a, b) -> (short) (a * b));
 	}
 
 	public static boolean div(CPU cpu) {

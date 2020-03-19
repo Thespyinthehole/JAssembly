@@ -1,37 +1,49 @@
 package JAssembly.Compiler;
 
 import java.util.EnumSet;
+import java.util.function.Predicate;
 
 import JAssembly.OperandConvertor;
 import JAssembly.OperandType;
+import JAssembly.Interpreter.CPU;
+import JAssembly.Interpreter.OPCodes.Arithmetic;
+import JAssembly.Interpreter.OPCodes.Jump;
+import JAssembly.Interpreter.OPCodes.Memory;
 
 @SuppressWarnings("unchecked")
 public enum InstructionParser {
-	HALT(0), 
-	MOV(1, EnumSet.of(OperandType.MEMORY, OperandType.MEMORYSHIFT), EnumSet.allOf(OperandType.class)),
-	LDR(2, EnumSet.of(OperandType.REGISTER), EnumSet.allOf(OperandType.class)),
-	PUSH(3, EnumSet.of(OperandType.REGISTER), EnumSet.allOf(OperandType.class)),
-	JMP(8, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
-	JMPZ(9, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
-	JMPL(10, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
-	JMPG(11, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
-	ADD(32, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
-	SUB(33, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
-	MUL(34, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
-	DIV(35, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT));
+	
+	HALT((short) 0, null), 
+	MOV((short)  1, Memory::mov, EnumSet.of(OperandType.MEMORY, OperandType.MEMORYSHIFT), EnumSet.allOf(OperandType.class)),
+	LDR((short)  2, Memory::ldr, EnumSet.of(OperandType.REGISTER), EnumSet.allOf(OperandType.class)),
+	PUSH((short) 3, Memory::push, EnumSet.of(OperandType.REGISTER), EnumSet.allOf(OperandType.class)),
+	JMP((short)  8, Jump::jump, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	JMPZ((short) 9, Jump::jumpZero, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	JMPL((short) 10, Jump::jumpLessThan, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	JMPG((short) 11, Jump::jumpGreaterThan, EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	ADD((short)  32, Arithmetic::add, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	SUB((short)  33, Arithmetic::sub, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	MUL((short)  34, Arithmetic::mul, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT)),
+	DIV((short)  35, Arithmetic::div, EnumSet.of(OperandType.REGISTER), EnumSet.of(OperandType.REGISTER, OperandType.CONSTANT));
 
 	// Parameters
 	short opcode;
+	Predicate<CPU> opcodePredicate;
 	EnumSet<OperandType>[] params;
 
 	// Constructors
-	InstructionParser(int opcode, EnumSet<OperandType>... params) {
-		this.opcode = (short)opcode;
+	InstructionParser(short opcode, Predicate<CPU> opcodePredicate, EnumSet<OperandType>... params) {
+		this.opcode = opcode;
+		this.opcodePredicate = opcodePredicate;
 		this.params = params;
 	}
 
 	public short getOpcode() {
 		return opcode;
+	}
+	
+	public Predicate<CPU> getOpcodePredicate() {
+		return this.opcodePredicate;
 	}
 	
 	public int getParamCount() {

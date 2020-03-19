@@ -1,15 +1,13 @@
 package JAssembly.Interpreter;
 
-import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
 import JAssembly.InterpretException;
 import JAssembly.OperandConvertor;
 import JAssembly.OperandType;
-import JAssembly.Interpreter.OPCodes.Arithmetic;
-import JAssembly.Interpreter.OPCodes.Jump;
-import JAssembly.Interpreter.OPCodes.Memory;
+import JAssembly.Compiler.InstructionParser;
 
 public class CPU {
 
@@ -23,7 +21,7 @@ public class CPU {
 	private boolean flagged = false;
 
 	@SuppressWarnings("unchecked")
-	private final Predicate<CPU>[] OPCODES = (Predicate<CPU>[]) Array.newInstance(Predicate.class, 40);
+	private final Predicate<CPU>[] OPCODES = new Predicate[40];
 
 	public CPU() {
 		this(1024, 8);
@@ -49,17 +47,9 @@ public class CPU {
 	}
 
 	private void initOPCodes() {
-		OPCODES[1] = Memory::mov;
-		OPCODES[2] = Memory::ldr;
-		OPCODES[3] = Memory::push;
-		OPCODES[8] = Jump::jump;
-		OPCODES[9] = Jump::jumpZero;
-		OPCODES[10] = Jump::jumpLessThen;
-		OPCODES[11] = Jump::jumpGreaterThen;
-		OPCODES[32] = Arithmetic::add;
-		OPCODES[33] = Arithmetic::sub;
-		OPCODES[34] = Arithmetic::mul;
-		OPCODES[35] = Arithmetic::div;
+		Arrays.stream(InstructionParser.values())
+			.filter(p -> p.getOpcodePredicate() != null)
+			.forEach(p -> OPCODES[p.getOpcode()] = p.getOpcodePredicate());
 	}
 
 	private void step() throws InterpretException {

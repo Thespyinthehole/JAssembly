@@ -42,7 +42,7 @@ public class Jump {
 		return true;
 	}
 
-	public static boolean jumpLessThen(CPU cpu) {
+	public static boolean jumpLessThan(CPU cpu) {
 		if (cpu.getFlag(Flag.NEGATIVE)) {
 			return jumpTo(cpu);
 		} else {
@@ -51,7 +51,7 @@ public class Jump {
 		return true;
 	}
 
-	public static boolean jumpGreaterThen(CPU cpu) {
+	public static boolean jumpGreaterThan(CPU cpu) {
 		if (!(cpu.getFlag(Flag.NEGATIVE)|| cpu.getFlag(Flag.ZERO))) {
 			return jumpTo(cpu);
 		} else {
