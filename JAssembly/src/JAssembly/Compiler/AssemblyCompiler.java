@@ -66,10 +66,9 @@ public class AssemblyCompiler {
 
 	private void findUnreachable(Map<Integer, String> lines, int lineNum) throws SyntaxException {
 		String line = lines.get(lineNum);
-
 		if (line == null)
 			return;
-		
+
 		if (line.length() == 0) {
 			findUnreachable(lines, lineNum + 1);
 			return;
@@ -130,6 +129,7 @@ public class AssemblyCompiler {
 			String line = lines[i];
 			line = cleanLine(line);
 			if (line.length() == 0 || line.equals(" ")) {
+				cleanCode.put(i + 1, "");
 				continue;
 			}
 			line = extractConstants(line, i + 1);
