@@ -5,6 +5,7 @@ import java.util.Map;
 import JAssembly.Compiler.Constant;
 
 public class OperandConvertor {
+	
 	public static Short convertOperand(String operand, Map<String, Constant> constants, int lineNum) throws SyntaxException {
 		if (operand.matches("[a-z]+")) {
 			Constant constant = constants.get(operand);
