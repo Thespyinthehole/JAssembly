@@ -47,9 +47,8 @@ public class CPU {
 	}
 
 	private void initOPCodes() {
-		Arrays.stream(Instruction.values())
-			.filter(p -> p.getOpcodeCommand() != null)
-			.forEach(p -> OPCODES[p.getOpcode()] = p.getOpcodeCommand());
+		Arrays.stream(Instruction.values()).filter(p -> p.getOpcodeCommand() != null)
+				.forEach(p -> OPCODES[p.getOpcode()] = p.getOpcodeCommand());
 	}
 
 	private void step() throws InterpretException {
@@ -67,19 +66,21 @@ public class CPU {
 			throw new InterpretException(getIndex(), "'" + val + "' is not an instruction");
 
 		boolean success = opcode.execute(this);
-		if(!success) {
+		if (!success) {
 			halted = true;
 			return;
 		}
-			
-		if(!flagged) {
+
+		if (!flagged) {
 			zero = false;
 			negative = false;
 		}
 		System.out.println(this);
 	}
 
-	public short readNext() {
+	public short readNext() throws InterpretException {
+		if (pc + 1 < 0 || pc + 1 >= memory.length)
+			throw new InterpretException("Memory location '" + pc + 1 + "' does not exist");
 		return memory[pc++];
 	}
 
@@ -125,18 +126,20 @@ public class CPU {
 	}
 
 	public short read(int index) throws InterpretException {
-		if(index < 0 || index >= memory.length)
-			throw new InterpretException("Memory '" + index + "' does not exist");
+		if (index < 0 || index >= memory.length)
+			throw new InterpretException("Memory location '" + index + "' does not exist");
 		return memory[index];
 	}
 
 	public short getRegister(int index) throws InterpretException {
-		if(index < 0 || index >= registers.length)
+		if (index < 0 || index >= registers.length)
 			throw new InterpretException("Register '" + index + "' does not exist");
 		return registers[index];
 	}
 
-	public void setRegister(int index, short value) {
+	public void setRegister(int index, short value) throws InterpretException {
+		if (index < 0 || index >= registers.length)
+			throw new InterpretException("Register '" + index + "' does not exist");
 		registers[index] = value;
 	}
 
@@ -153,7 +156,9 @@ public class CPU {
 		return mod(memloc, (short) memory.length);
 	}
 
-	public void write(int memloc, short value) {
+	public void write(int memloc, short value) throws InterpretException {
+		if (memloc < 0 || memloc >= memory.length)
+			throw new InterpretException("Memory location '" + memloc + "' does not exist");
 		memory[memloc] = value;
 	}
 

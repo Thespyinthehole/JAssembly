@@ -55,8 +55,13 @@ public class OperandConvertor {
 	}
 
 	public static short extractValue(short value) {
+		short constant = (short) 0b1100000000000000;
 		short stripper = (short) 0b0011111111111111;
 		short stripped = (short) (value & stripper);
+
+		if((value & constant) != 0)
+			return stripped;
+
 		short total = 0;
 		int val = (int) Math.pow(2, 13);
 

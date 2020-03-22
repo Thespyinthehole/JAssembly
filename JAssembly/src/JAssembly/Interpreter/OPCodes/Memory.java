@@ -42,7 +42,7 @@ public class Memory {
 		return true;
 	}
 
-	public static boolean push(CPU cpu) {
+	public static boolean push(CPU cpu) throws InterpretException {
 		short param1 = cpu.readNext();
 		OperandType type = OperandConvertor.getType(param1);
 		Short memloc = null;
