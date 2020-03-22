@@ -149,6 +149,13 @@
                 <div id="content" class="content">
                     <main>
                         <h1><a class="header" href="#operands" id="operands">Operands</a></h1>
+<p>Operands can be of 4 different types. Each instruction can only accept certain types of operands. The first 2 bits of the operand byte code determines what type of operand it is. The following 14 bits is the value of the operand in two's complement.</p>
+<table><thead><tr><th>Operand Type</th><th align="center">Byte code</th></tr></thead><tbody>
+<tr><td>Constant</td><td align="center"><code>00xx xxxx xxxx xxxx</code></td></tr>
+<tr><td>Memory</td><td align="center"><code>01xx xxxx xxxx xxxx</code></td></tr>
+<tr><td>Memory Offset</td><td align="center"><code>10xx xxxx xxxx xxxx</code></td></tr>
+<tr><td>Register</td><td align="center"><code>11xx xxxx xxxx xxxx</code></td></tr>
+</tbody></table>
 
                     </main>
 

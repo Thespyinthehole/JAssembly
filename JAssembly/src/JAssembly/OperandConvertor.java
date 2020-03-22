@@ -5,8 +5,9 @@ import java.util.Map;
 import JAssembly.Compiler.Constant;
 
 public class OperandConvertor {
-	
-	public static Short convertOperand(String operand, Map<String, Constant> constants, int lineNum) throws SyntaxException {
+
+	public static Short convertOperand(String operand, Map<String, Constant> constants, int lineNum)
+			throws SyntaxException {
 		if (operand.matches("[a-z]+")) {
 			Constant constant = constants.get(operand);
 			if (constant == null)
@@ -55,28 +56,47 @@ public class OperandConvertor {
 	}
 
 	public static short extractValue(short value) {
-		short constant = (short) 0b1100000000000000;
 		short stripper = (short) 0b0011111111111111;
-		short stripped = (short) (value & stripper);
-
-		if((value & constant) != 0)
+		short stripped = (short) ((value & stripper) * Math.signum(value));
+		OperandType type = getType(value);
+		switch (type) {
+		case MEMORYOFFSET:
+			stripped *= Math.signum(value);
+			if ((stripped & (short) 0b0010000000000000) != 0) 
+				stripped *= -1;
+			
+			break;
+		case REGISTER:
+			stripped *= -1;
+		case MEMORYLOCATION:
+			if (stripped < 0)
+				stripped += (short) Math.pow(2, 13);
 			return stripped;
+		case CONSTANT:
+			if(stripped >= Math.pow(2, 13))
+				stripped = (short)(stripped - 2 * Math.pow(2, 13));
+		}
+
+		if (stripped == 0)
+			return 0;
 
 		short total = 0;
 		int val = (int) Math.pow(2, 13);
-
-		if (stripped > val) {
+		if (stripped < 0) {
 			total -= val;
-			stripped -= val;
+			stripped += val;
 		}
 
 		val /= 2;
 
-		for (int i = 12; i >= 0; i--) {
+		int i = 0;
+		while (stripped != 0 && i++ <= 12) {
 			if (stripped >= val) {
 				stripped -= val;
 				total += val;
 			}
+			if (stripped == 0)
+				break;
 			val /= 2;
 		}
 
@@ -95,16 +115,17 @@ public class OperandConvertor {
 			return OperandType.REGISTER;
 
 		if ((operand & memory) != 0)
-			return OperandType.MEMORY;
+			return OperandType.MEMORYLOCATION;
 
-		return OperandType.MEMORYSHIFT;
+		return OperandType.MEMORYOFFSET;
 	}
 
-	private static short convertToBytes(String data) {
+	public static short convertToBytes(String data) {
 		short value = Short.valueOf(data);
 		int val = (int) Math.pow(2, 13);
-		if (Math.abs(value) >= val)
+		if (value >= val || value < -val)
 			return value;
+
 		short total = 0;
 
 		if (value < 0) {

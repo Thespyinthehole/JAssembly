@@ -13,8 +13,8 @@ public class Jump {
 		OperandType type = OperandConvertor.getType(param);
 		short value = 0;
 		switch (type) {
-		case MEMORY:
-		case MEMORYSHIFT:
+		case MEMORYLOCATION:
+		case MEMORYOFFSET:
 			cpu.halt();
 			throw new InterpretException("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
 		case CONSTANT:
@@ -64,8 +64,8 @@ public class Jump {
 		OperandType type = OperandConvertor.getType(param);
 		short value = 0;
 		switch (type) {
-		case MEMORY:
-		case MEMORYSHIFT:
+		case MEMORYLOCATION:
+		case MEMORYOFFSET:
 		case CONSTANT:
 			throw new InterpretException("Can only compare a register");
 		case REGISTER:
@@ -75,8 +75,8 @@ public class Jump {
 		type = OperandConvertor.getType(param);
 		short value1 = 0;
 		switch (type) {
-		case MEMORY:
-		case MEMORYSHIFT:
+		case MEMORYLOCATION:
+		case MEMORYOFFSET:
 			throw new InterpretException("Can only compare to a register or a constant");
 		case CONSTANT:
 			value1 = OperandConvertor.extractValue(param);

@@ -50,62 +50,51 @@ public class JAssembly {
 
 	public JAssembly(File file, String ext, String[] args) throws IOException {
 		String[] lines = readLines(file);
-		if (ext.equals(".jasm")) {
-			AssemblyCompiler compiler = new AssemblyCompiler();
-			try {
-				compiler.compile(lines, file);
-			} catch (SyntaxException e) {
-				System.out.println(e);
-			}
-		} else {
-			BinaryInterpreter interpreter = new BinaryInterpreter();
-			int registers = 8;
-			int memory = 64;
+		try {
+			if (ext.equals(".jasm"))
+				new AssemblyCompiler().compile(lines, file);
+			else
+				interpret(lines, args);
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+	}
 
-			if (args.length > 2) {
-				if (args.length % 2 != 0 && args.length <= 6) {
-					System.err.println("Invalid interpreter parameters. Please refer to the -help option.");
-					return;
-				}
-				for (int i = 2; i < args.length; i += 2) {
-					switch (args[i]) {
-					case "-regs":
-						try {
-							registers = Integer.valueOf(args[i + 1]);
-							if (registers < 0 || registers > 256) {
-								System.err.println("The -regs parameter needs to be between 0 and 256.");
-								return;
-							}
-						} catch (NumberFormatException e) {
-							System.err.println("The -regs parameter needs a integer value.");
-							return;
-						}
-						break;
-					case "-mem":
-						try {
-							memory = Integer.valueOf(args[i + 1]);
-							if (memory < 0 || memory > 8192) {
-								System.err.println("The -mem parameter needs to be between 0 and 8192.");
-								return;
-							}
-						} catch (NumberFormatException e) {
-							System.err.println("The -mem parameter needs a integer value.");
-							return;
-						}
-						break;
-					default:
-						System.err.println("Invalid interpreter parameters. Please refer to the -help option.");
-						return;
-					}
-				}
-			}
+	private void interpret(String[] lines, String[] args) throws Exception {
+		int registers = 8;
+		int memory = 64;
 
-			try {
-				interpreter.interpret(lines, memory, registers);
-			} catch (InterpretException e) {
-				System.out.println(e);
+		if (args.length % 2 != 0 && args.length <= 6)
+			throw new Exception("Invalid interpreter parameters. Please refer to the -help option.");
+
+		for (int i = 2; i < args.length; i += 2) {
+			switch (args[i]) {
+			case "-regs":
+				try {
+					registers = Integer.valueOf(args[i + 1]);
+					if (registers < 0 || registers > 256)
+						throw new Exception("The -regs parameter needs to be between 0 and 256.");
+
+				} catch (NumberFormatException e) {
+					throw new Exception("The -regs parameter needs a integer value.");
+				}
+				break;
+			case "-mem":
+				try {
+					memory = Integer.valueOf(args[i + 1]);
+					if (memory < 0 || memory > 16384)
+						throw new Exception("The -mem parameter needs to be between 0 and 16384.");
+
+				} catch (NumberFormatException e) {
+					throw new Exception("The -mem parameter needs a integer value.");
+				}
+				break;
+			default:
+				throw new Exception("Invalid interpreter parameters. Please refer to the -help option.");
 			}
 		}
+
+		new BinaryInterpreter().interpret(lines, memory, registers);
 	}
 
 	private String[] readLines(File file) throws IOException {
@@ -121,6 +110,6 @@ public class JAssembly {
 		System.out.println("	-c   : Followed by a file to compile,   do not include the extension");
 		System.out.println("	-r   : Followed by a file to interpret, do not include the extension");
 		System.out.println("			-regs : Followed by an integer to change the register count. Default: 8");
-		System.out.println("			-mem  : Followed by an integer to change the memory size.    Default: 1024");
+		System.out.println("			-mem  : Followed by an integer to change the memory size.    Default: 64");
 	}
 }

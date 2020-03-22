@@ -34,8 +34,9 @@ public class CPU {
 	}
 
 	public void loadIntoMemory(List<Short> program) throws InterpretException {
-		if (program.size() > memory.length)
-			throw new InterpretException("Program is too big for memory size: " + memory.length);
+		if (program.size() + 1 > memory.length)
+			throw new InterpretException("Program is too big for memory size: " + memory.length + ", needs at least "
+					+ (program.size() + 1) + " memory locations");
 
 		for (int i = 0; i < program.size(); i++)
 			memory[i] = program.get(i);
@@ -80,7 +81,7 @@ public class CPU {
 
 	public short readNext() throws InterpretException {
 		if (pc + 1 < 0 || pc + 1 >= memory.length)
-			throw new InterpretException("Memory location '" + pc + 1 + "' does not exist");
+			throw new InterpretException("Memory location '" + (pc + 1) + "' does not exist");
 		return memory[pc++];
 	}
 
@@ -112,11 +113,11 @@ public class CPU {
 		Short memloc = null;
 		switch (type) {
 		case CONSTANT:
-			return OperandConvertor.extractValue(param);
-		case MEMORY:
+			return param;
+		case MEMORYLOCATION:
 			memloc = OperandConvertor.extractValue(param);
 			return read(memloc);
-		case MEMORYSHIFT:
+		case MEMORYOFFSET:
 			return read(memoryShift(param));
 		case REGISTER:
 			short register = OperandConvertor.extractValue(param);
@@ -152,7 +153,7 @@ public class CPU {
 	}
 
 	public short memoryShift(short param) {
-		short memloc = (short) (OperandConvertor.extractValue(param) + pc - 1);
+		short memloc = (short) (OperandConvertor.extractValue(param) + (pc - 1));
 		return mod(memloc, (short) memory.length);
 	}
 
@@ -174,14 +175,14 @@ public class CPU {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Registers: ");
 		for (short register : registers) {
-			builder.append(register + " ");
+			builder.append(getOperandString(register) + " ");
 		}
 
 		builder.append("\nMemory: ");
 		for (int i = 0; i < memory.length; i++) {
 			if (i == pc)
 				builder.append(">");
-			builder.append(memory[i] + " ");
+			builder.append(getOperandString(memory[i]) + " ");
 		}
 		builder.append("\nPC: " + pc);
 		builder.append("\nFlags:");
@@ -189,5 +190,24 @@ public class CPU {
 		builder.append("\n     Zero: " + getFlag(Flag.ZERO));
 		builder.append("\n------------------------");
 		return builder.toString();
+	}
+
+	private String getOperandString(short value) {
+		String starter = "";
+		OperandType type = OperandConvertor.getType(value);
+		short amount = OperandConvertor.extractValue(value);
+		switch (type) {
+		case MEMORYOFFSET:
+			starter = (amount >= 0 ? "+" : "");
+		case MEMORYLOCATION:
+			starter = "m" + starter;
+			break;
+		case REGISTER:
+			starter = "r";
+			break;
+		case CONSTANT:
+		}
+		String literalValue = String.valueOf(amount);
+		return (starter + literalValue);
 	}
 }

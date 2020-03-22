@@ -17,10 +17,10 @@ public class Memory {
 			cpu.halt();
 			System.err.println("Intepret error at index '" + cpu.getIndex() + "': Can only move into memory");
 			return false;
-		case MEMORY:
+		case MEMORYLOCATION:
 			memloc = OperandConvertor.extractValue(param);
 			break;
-		case MEMORYSHIFT:
+		case MEMORYOFFSET:
 			memloc = cpu.memoryShift(param);
 			break;
 		}
@@ -34,8 +34,7 @@ public class Memory {
 		OperandType type = OperandConvertor.getType(param);
 		if (type != OperandType.REGISTER) {
 			cpu.halt();
-			System.err.println("Intepret error at index '" + cpu.getIndex() + "': Can only load into registers");
-			return false;
+			throw new InterpretException(cpu.getIndex(), "Can only load into registers");
 		}
 
 		cpu.setRegister(OperandConvertor.extractValue(param), cpu.readNextValue());
@@ -52,10 +51,10 @@ public class Memory {
 			System.err.println("Intepret error at index '" + cpu.getIndex()
 					+ "': Can only push into a register or memory location");
 			return false;
-		case MEMORY:
+		case MEMORYLOCATION:
 			memloc = OperandConvertor.extractValue(param1);
 			break;
-		case MEMORYSHIFT:
+		case MEMORYOFFSET:
 			memloc = cpu.memoryShift(param1);
 			break;
 		case REGISTER:

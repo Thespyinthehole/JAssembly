@@ -1,6 +1,6 @@
 # Memory
 
-A memory location can be declared by `m` followed by a natural number. The maximum number of memory locations has been capped at 8192.
+A memory location can be declared by `m` followed by a natural number. The maximum number of memory locations has been capped at 16384.
 
 
 ## Examples

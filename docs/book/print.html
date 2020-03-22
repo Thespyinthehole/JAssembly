@@ -266,6 +266,13 @@
 </li>
 </ul>
 <h1><a class="header" href="#operands" id="operands">Operands</a></h1>
+<p>Operands can be of 4 different types. Each instruction can only accept certain types of operands. The first 2 bits of the operand byte code determines what type of operand it is. The following 14 bits is the value of the operand in two's complement.</p>
+<table><thead><tr><th>Operand Type</th><th align="center">Byte code</th></tr></thead><tbody>
+<tr><td>Constant</td><td align="center"><code>00xx xxxx xxxx xxxx</code></td></tr>
+<tr><td>Memory</td><td align="center"><code>01xx xxxx xxxx xxxx</code></td></tr>
+<tr><td>Memory Offset</td><td align="center"><code>10xx xxxx xxxx xxxx</code></td></tr>
+<tr><td>Register</td><td align="center"><code>11xx xxxx xxxx xxxx</code></td></tr>
+</tbody></table>
 <h1><a class="header" href="#registers" id="registers">Registers</a></h1>
 <p>Registers are form of memory in which most operations can be done on them. A register can be declared by <code>r</code> followed by a natural number. The maximum number of registers is capped at 256.</p>
 <h2><a class="header" href="#examples-4" id="examples-4">Examples</a></h2>
@@ -283,9 +290,31 @@
 <li><code>m1000</code></li>
 </ul>
 <h1><a class="header" href="#memory-offset" id="memory-offset">Memory Offset</a></h1>
+<p>The memory offset operand is similar to the memory operand in which is gets values from the memory. It can be declared by either <code>m+</code> or <code>m-</code> depending on which direction the offset should go in. </p>
+<p>The memory offset works by getting the current memory location related to where this operand is stored and then shifts it based on the number given. If <code>m+</code> is used, it is shifted to the right.If <code>m-</code> is used, it is shifted to the left.</p>
+<h2><a class="header" href="#examples-6" id="examples-6">Examples</a></h2>
+<p>This is the memory locations. <code>*</code> indicates where the operand is located. <code>^</code> indicates which memory location to use.</p>
+<ul>
+<li><code>MOV m+2 10</code></li>
+</ul>
+<table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>
+<tr><td>MOV</td><td>m+2<code>*</code></td><td>10</td><td><code>^</code></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<ul>
+<li><code>LDR r0 m+3</code></li>
+</ul>
+<table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>
+<tr><td>LDR</td><td>r0</td><td>m+3<code>*</code></td><td></td><td></td><td><code>^</code></td><td></td></tr>
+</tbody></table>
+<ul>
+<li><code>LDR r0 m-1</code></li>
+</ul>
+<table><thead><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>
+<tr><td>LDR</td><td>r0 <code>^</code></td><td>m-1<code>*</code></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
 <h1><a class="header" href="#constants-1" id="constants-1">Constants</a></h1>
 <p>All constants will be equal to an <code>&lt;operand&gt;</code> value, which will be explained later on, and the constant needs to have a name. The name given needs to be all lower case and can only contain alphabetical characters. The format of a constant declaration is: <code>&lt;name&gt; = &lt;operand&gt;</code>, there can be as much or as little white space between the <code>=</code> and the <code>&lt;name&gt;</code> and <code>&lt;operand&gt;</code>. The names of the constants have to be unique, which means they can not be declared twice.</p>
-<h2><a class="header" href="#examples-6" id="examples-6">Examples</a></h2>
+<h2><a class="header" href="#examples-7" id="examples-7">Examples</a></h2>
 <h3><a class="header" href="#declaration-2" id="declaration-2">Declaration</a></h3>
 <ul>
 <li>
