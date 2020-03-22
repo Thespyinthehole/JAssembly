@@ -18,6 +18,7 @@ public class AssemblyCompiler {
 	private Map<String, Constant> constants = new HashMap<>();
 	private Map<Integer, Integer> memoryToLine = new HashMap<>();
 	private boolean constant = true;
+	private String lastLabel = null;
 	private Map<Integer, Boolean> unusedLines = new HashMap<>();
 	private int memloc = 0;
 
@@ -116,6 +117,10 @@ public class AssemblyCompiler {
 			line = extractConstants(line, i + 1);
 			cleanCode.put(i + 1, line);
 		}
+		
+		if (lastLabel != null)
+			throw new SyntaxException("Label '" + lastLabel + "' does not link to an instruction");
+
 		return cleanCode;
 	}
 
@@ -167,6 +172,8 @@ public class AssemblyCompiler {
 	private String extractLineName(String line, int lineNum) throws SyntaxException {
 		int index = line.indexOf(":");
 		if (index != -1) {
+			if (lastLabel != null)
+				throw new SyntaxException(lineNum, "Label '" + lastLabel + "' does not link to an instruction");
 			String lineName = line.substring(0, index);
 			if (constants.containsKey(lineName))
 				throw new SyntaxException(lineNum, "Constant '" + lineName + "' declared twice");
@@ -176,11 +183,12 @@ public class AssemblyCompiler {
 
 			constants.put(lineName, new Constant(String.valueOf(memloc)));
 			line = line.substring(index + 1).trim();
-			if (line.length() == 0)
-				// throw new SyntaxException(lineNum, "Label '" + lineName + "' points to no
-				// instruction");
+			if (line.length() == 0) {
+				lastLabel = lineName;
 				return line;
+			}
 		}
+		lastLabel = null;
 		String[] split = line.split(" ");
 		memloc += split.length;
 		memoryToLine.put(memloc, lineNum);

@@ -1,0 +1,28 @@
+# prime num result = 0 if not prime, result = 1 if prime
+num = 200
+x = r0
+cap = r1
+check = r2
+result = r3
+
+LDR cap num
+DIV cap 2
+LDR x 1
+
+for: 
+	INC x
+	LDR check num
+	MOD check x
+	JMPZ done
+
+	CMP x cap
+	JMPZ prime
+	JMP for
+	
+done:
+	LDR result 0
+	HALT
+
+prime:	
+	LDR result 1
+	HALT
