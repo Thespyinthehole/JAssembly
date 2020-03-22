@@ -1,5 +1,6 @@
 package JAssembly.Interpreter.OPCodes;
 
+import JAssembly.InterpretException;
 import JAssembly.OperandConvertor;
 import JAssembly.OperandType;
 import JAssembly.Interpreter.CPU;
@@ -7,8 +8,7 @@ import JAssembly.Interpreter.Flag;
 
 public class Jump {
 
-
-	private static boolean jumpTo(CPU cpu) {
+	private static boolean jumpTo(CPU cpu) throws InterpretException {
 		short param = cpu.readNext();
 		OperandType type = OperandConvertor.getType(param);
 		short value = 0;
@@ -16,8 +16,7 @@ public class Jump {
 		case MEMORY:
 		case MEMORYSHIFT:
 			cpu.halt();
-			System.err.println("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
-			return false;
+			throw new InterpretException("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
 		case CONSTANT:
 			value = OperandConvertor.extractValue(param);
 			break;
@@ -29,11 +28,11 @@ public class Jump {
 		return true;
 	}
 
-	public static boolean jump(CPU cpu) {
+	public static boolean jump(CPU cpu) throws InterpretException {
 		return jumpTo(cpu);
 	}
 
-	public static boolean jumpZero(CPU cpu) {
+	public static boolean jumpZero(CPU cpu) throws InterpretException {
 		if (cpu.getFlag(Flag.ZERO)) {
 			return jumpTo(cpu);
 		} else {
@@ -42,7 +41,7 @@ public class Jump {
 		return true;
 	}
 
-	public static boolean jumpLessThan(CPU cpu) {
+	public static boolean jumpLessThan(CPU cpu) throws InterpretException {
 		if (cpu.getFlag(Flag.NEGATIVE)) {
 			return jumpTo(cpu);
 		} else {
@@ -51,12 +50,43 @@ public class Jump {
 		return true;
 	}
 
-	public static boolean jumpGreaterThan(CPU cpu) {
-		if (!(cpu.getFlag(Flag.NEGATIVE)|| cpu.getFlag(Flag.ZERO))) {
+	public static boolean jumpGreaterThan(CPU cpu) throws InterpretException {
+		if (!(cpu.getFlag(Flag.NEGATIVE) || cpu.getFlag(Flag.ZERO))) {
 			return jumpTo(cpu);
 		} else {
 			cpu.readNext();
 		}
+		return true;
+	}
+
+	public static boolean compare(CPU cpu) throws InterpretException {
+		short param = cpu.readNext();
+		OperandType type = OperandConvertor.getType(param);
+		short value = 0;
+		switch (type) {
+		case MEMORY:
+		case MEMORYSHIFT:
+		case CONSTANT:
+			throw new InterpretException("Can only compare a register");
+		case REGISTER:
+			value = cpu.getRegister(OperandConvertor.extractValue(param));
+		}
+		param = cpu.readNext();
+		type = OperandConvertor.getType(param);
+		short value1 = 0;
+		switch (type) {
+		case MEMORY:
+		case MEMORYSHIFT:
+			throw new InterpretException("Can only compare to a register or a constant");
+		case CONSTANT:
+			value1 = OperandConvertor.extractValue(param);
+			break;
+		case REGISTER:
+			value1 = cpu.getRegister(OperandConvertor.extractValue(param));
+		}
+		
+		cpu.setFlag(Flag.ZERO, value == value1);
+		cpu.setFlag(Flag.NEGATIVE, value < value1);
 		return true;
 	}
 }

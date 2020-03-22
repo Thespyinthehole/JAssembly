@@ -99,13 +99,9 @@ public class AssemblyCompiler {
 		for (Short bytecode : bytecodes)
 			builder.append(OperandConvertor.convertToBinaryString(bytecode) + ((++val % 3 == 0) ? "\n" : " "));
 		builder.deleteCharAt(builder.length() - 1);
-		
-		Files.writeString(binaryFile.toPath(), builder.toString());
 
-//		FileWriter writer = new FileWriter(binaryFile);
-//		writer.write(builder.toString());
-//		writer.flush();
-//		writer.close();
+		Files.write(binaryFile.toPath(), builder.toString().getBytes());
+
 	}
 
 	private Map<Integer, String> cleanCodeAndExtractConstants(String[] lines) throws SyntaxException {
@@ -181,7 +177,9 @@ public class AssemblyCompiler {
 			constants.put(lineName, new Constant(String.valueOf(memloc)));
 			line = line.substring(index + 1).trim();
 			if (line.length() == 0)
-				throw new SyntaxException(lineNum, "Label '" + lineName + "' points to no instruction");
+				// throw new SyntaxException(lineNum, "Label '" + lineName + "' points to no
+				// instruction");
+				return line;
 		}
 		String[] split = line.split(" ");
 		memloc += split.length;

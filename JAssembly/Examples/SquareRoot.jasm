@@ -1,0 +1,27 @@
+# sqrt a
+a = 8000
+n = r0
+m = r1
+result = r2
+
+LDR n a
+DIV n 2
+INC n
+LDR m a
+DIV m n
+ADD m n
+DIV m 2
+
+CMP m n
+JMPL while
+JMP endwhile
+
+while: 	LDR n m
+	LDR m a
+	DIV m n
+	ADD m n
+	DIV m 2
+
+	CMP m n
+	JMPL while
+endwhile: LDR result n

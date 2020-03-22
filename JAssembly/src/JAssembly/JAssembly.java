@@ -60,7 +60,7 @@ public class JAssembly {
 		} else {
 			BinaryInterpreter interpreter = new BinaryInterpreter();
 			int registers = 8;
-			int memory = 1024;
+			int memory = 64;
 
 			if (args.length > 2) {
 				if (args.length % 2 != 0 && args.length <= 6) {

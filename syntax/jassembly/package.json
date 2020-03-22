@@ -1,0 +1,25 @@
+{
+    "name": "jassembly",
+    "displayName": "JAssembly",
+    "description": "Syntax highlighting for JAssembly",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.37.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "jassembly",
+            "aliases": ["JAssembly", "jassembly"],
+            "extensions": [".jasm"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "jassembly",
+            "scopeName": "source.jassembly",
+            "path": "./syntaxes/jassembly.tmLanguage.json"
+        }]
+    }
+}

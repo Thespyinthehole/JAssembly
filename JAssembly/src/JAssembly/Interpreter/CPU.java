@@ -2,8 +2,8 @@ package JAssembly.Interpreter;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
+import JAssembly.Command;
 import JAssembly.InterpretException;
 import JAssembly.OperandConvertor;
 import JAssembly.OperandType;
@@ -21,7 +21,7 @@ public class CPU {
 	private boolean flagged = false;
 
 	@SuppressWarnings("unchecked")
-	private final Predicate<CPU>[] OPCODES = new Predicate[40];
+	private final Command<CPU>[] OPCODES = new Command[40];
 
 	public CPU() {
 		this(1024, 8);
@@ -48,8 +48,8 @@ public class CPU {
 
 	private void initOPCodes() {
 		Arrays.stream(Instruction.values())
-			.filter(p -> p.getOpcodePredicate() != null)
-			.forEach(p -> OPCODES[p.getOpcode()] = p.getOpcodePredicate());
+			.filter(p -> p.getOpcodeCommand() != null)
+			.forEach(p -> OPCODES[p.getOpcode()] = p.getOpcodeCommand());
 	}
 
 	private void step() throws InterpretException {
@@ -62,11 +62,11 @@ public class CPU {
 		if (val < 0 || val >= OPCODES.length)
 			throw new InterpretException(getIndex(), "'" + val + "' is not an instruction");
 
-		Predicate<CPU> opcode = OPCODES[val];
+		Command<CPU> opcode = OPCODES[val];
 		if (opcode == null)
 			throw new InterpretException(getIndex(), "'" + val + "' is not an instruction");
 
-		boolean success = opcode.test(this);
+		boolean success = opcode.execute(this);
 		if(!success) {
 			halted = true;
 			return;
@@ -105,7 +105,7 @@ public class CPU {
 		}
 	}
 
-	public short readNextValue() {
+	public short readNextValue() throws InterpretException {
 		short param = readNext();
 		OperandType type = OperandConvertor.getType(param);
 		Short memloc = null;
@@ -124,11 +124,15 @@ public class CPU {
 		return 0;
 	}
 
-	public short read(int index) {
+	public short read(int index) throws InterpretException {
+		if(index < 0 || index >= memory.length)
+			throw new InterpretException("Memory '" + index + "' does not exist");
 		return memory[index];
 	}
 
-	public short getRegister(int index) {
+	public short getRegister(int index) throws InterpretException {
+		if(index < 0 || index >= registers.length)
+			throw new InterpretException("Register '" + index + "' does not exist");
 		return registers[index];
 	}
 

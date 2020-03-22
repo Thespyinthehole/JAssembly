@@ -1,12 +1,13 @@
 package JAssembly.Interpreter.OPCodes;
 
+import JAssembly.InterpretException;
 import JAssembly.OperandConvertor;
 import JAssembly.OperandType;
 import JAssembly.Interpreter.CPU;
 
 public class Memory {
 
-	public static boolean mov(CPU cpu) {
+	public static boolean mov(CPU cpu) throws InterpretException {
 		short param = cpu.readNext();
 		OperandType type = OperandConvertor.getType(param);
 		Short memloc = null;
@@ -28,7 +29,7 @@ public class Memory {
 		return true;
 	}
 
-	public static boolean ldr(CPU cpu) {
+	public static boolean ldr(CPU cpu) throws InterpretException {
 		short param = cpu.readNext();
 		OperandType type = OperandConvertor.getType(param);
 		if (type != OperandType.REGISTER) {

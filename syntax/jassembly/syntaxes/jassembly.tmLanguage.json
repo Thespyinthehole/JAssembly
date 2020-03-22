@@ -1,0 +1,55 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "jassembly",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#keywords"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [ {
+				"name": "keyword.control.jassembly",
+				"match": "HALT|MOV|LDR|PUSH|CMP|JMPZ|JMPL|JMPG|JMP|INC|DEC|ADD|SUB|MUL|DIV|MOD"
+			},  {
+				"name": "keyword.operator.jassembly",
+				"match": "[:=]"
+			},{
+				"name": "constant.character.jassembly",
+				"match": "m[-+]?[0-9]+"
+			}, {
+				"name": "invalid.illegal.jassembly",
+				"match": ""
+			}, {
+				"name": "storage.type.jassembly",
+				"match": ""
+			}, {
+				"name": "entity.name.function.jassembly",
+				"match": "[a-z]+((?=\\s+=)|(?=\\s*:))"
+			}, {
+				"name": "constant.language.jassembly",
+				"match": "r[0-9]+"
+			}, {
+				"name": "constant.numeric.jassembly",
+				"match": "-?[0-9]+"
+			}, {
+				"name": "support.function.jassembly",
+				"match": ""
+			}]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.number-sign.jassembly",
+					"begin": "#",
+					"end": "\n"
+				}
+
+			]
+		}
+	},
+	"scopeName": "source.jassembly"
+}
