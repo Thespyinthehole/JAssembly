@@ -8,10 +8,10 @@ holder = r5
 temp = r6
 swapreturn = r7
 
-a = 5
-b = 10
-c = 3
-d = 2 
+a = 99
+b = 60
+c = 40
+d = 20
 e = 7
 
 LDR index 1
