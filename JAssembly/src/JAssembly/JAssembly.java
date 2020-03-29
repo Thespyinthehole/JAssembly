@@ -28,6 +28,7 @@ public class JAssembly {
 			}
 			ext = ".jasm";
 			break;
+		case "-d":
 		case "-r":
 			if (args.length == 1) {
 				System.err.println("No file parameter found. Please refer to the -help option.");
@@ -94,7 +95,7 @@ public class JAssembly {
 			}
 		}
 
-		new BinaryInterpreter().interpret(lines, memory, registers);
+		new BinaryInterpreter().interpret(lines, memory, registers, args[0].equals("-d"));
 	}
 
 	private String[] readLines(File file) throws IOException {

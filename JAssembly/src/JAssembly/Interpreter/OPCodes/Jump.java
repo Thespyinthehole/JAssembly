@@ -15,7 +15,6 @@ public class Jump {
 		switch (type) {
 		case MEMORYLOCATION:
 		case MEMORYOFFSET:
-			cpu.halt();
 			throw new InterpretException("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
 		case CONSTANT:
 			value = OperandConvertor.extractValue(param);
@@ -58,7 +57,31 @@ public class Jump {
 		}
 		return true;
 	}
+	
+	public static boolean function(CPU cpu) throws InterpretException {
+		short param = cpu.readNext();
+		OperandType type = OperandConvertor.getType(param);
+		short value = 0;
+		switch (type) {
+		case MEMORYLOCATION:
+		case MEMORYOFFSET:
+			throw new InterpretException("Cannot directly access memory at index: '" + cpu.getIndex() + "'");
+		case CONSTANT:
+			value = OperandConvertor.extractValue(param);
+			break;
+		case REGISTER:
+			value = cpu.getRegister(OperandConvertor.extractValue(param));
+		}
+		cpu.addToReturnStack();
+		cpu.setPC(value);
+		return true;
+	}
 
+	public static boolean ret(CPU cpu) throws InterpretException { 
+		cpu.returnToLocation();
+		return true;
+	}
+	
 	public static boolean compare(CPU cpu) throws InterpretException {
 		short param = cpu.readNext();
 		OperandType type = OperandConvertor.getType(param);

@@ -1,5 +1,6 @@
 package JAssembly.Interpreter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,8 +14,8 @@ public class CPU {
 
 	private short[] memory;
 	private short[] registers;
-	private int pc = 0;
-
+	private short pc = 0;
+	private List<Short> returnStack = new ArrayList<Short>();
 	private boolean negative = false;
 	private boolean zero = false;
 	private boolean halted = false;
@@ -42,9 +43,9 @@ public class CPU {
 			memory[i] = program.get(i);
 	}
 
-	public void execute() throws InterpretException {
+	public void execute(boolean debug) throws InterpretException {
 		while (!halted)
-			step();
+			step(debug);
 	}
 
 	private void initOPCodes() {
@@ -52,7 +53,7 @@ public class CPU {
 				.forEach(p -> OPCODES[p.getOpcode()] = p.getOpcodeCommand());
 	}
 
-	private void step() throws InterpretException {
+	private void step(boolean debug) throws InterpretException {
 		short val = memory[pc++];
 		flagged = false;
 		if (val == 0) {
@@ -76,7 +77,8 @@ public class CPU {
 			zero = false;
 			negative = false;
 		}
-		System.out.println(this);
+		if (debug)
+			System.out.println(this);
 	}
 
 	public short readNext() throws InterpretException {
@@ -105,6 +107,14 @@ public class CPU {
 			zero = val;
 			break;
 		}
+	}
+
+	public void addToReturnStack() {
+		returnStack.add(pc);
+	}
+
+	public void returnToLocation() {
+		setPC(returnStack.remove(returnStack.size() - 1));
 	}
 
 	public short readNextValue() throws InterpretException {

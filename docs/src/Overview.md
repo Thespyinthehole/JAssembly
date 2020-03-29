@@ -54,6 +54,9 @@ This can also be done by:
 
     java -jar JAssembly.jar -r Program -regs 10 -mem 64
 
+### Debug Mode
+
+This mode will print all the memory and registers each step. It has the same parameters as run, except it has `-d` rather than `-r`.
 ### Prerequisites
 
 This project uses Java and therefore you will require at least Java 8, as this project uses some Java 8 features.

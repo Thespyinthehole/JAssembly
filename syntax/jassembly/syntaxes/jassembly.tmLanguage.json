@@ -13,7 +13,7 @@
 		"keywords": {
 			"patterns": [ {
 				"name": "keyword.control.jassembly",
-				"match": "HALT|MOV|LDR|PUSH|CMP|JMPZ|JMPL|JMPG|JMP|INC|DEC|ADD|SUB|MUL|DIV|MOD"
+				"match": "HALT|MOV|LDR|PUSH|CMP|JMPZ|JMPL|JMPG|JMP|FUNC|RET|PRT|INP|INC|DEC|ADD|SUB|MUL|DIV|MOD"
 			},  {
 				"name": "keyword.operator.jassembly",
 				"match": "[:=]"

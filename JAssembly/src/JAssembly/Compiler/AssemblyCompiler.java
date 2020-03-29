@@ -76,7 +76,7 @@ public class AssemblyCompiler {
 			return;
 
 		}
-		if (opcode.matches("JMP(Z|L|G)")) {
+		if (opcode.matches("(JMP(Z|L|G))|FUNC")) {
 			short operand = OperandConvertor.convertOperand(values[1], constants, lineNum);
 			if (OperandConvertor.getType(operand) != OperandType.CONSTANT)
 				return;
