@@ -25,10 +25,11 @@ public class IO {
 			value = cpu.getRegister(value);
 			break;
 		}
+		
 		if (value < 0)
 			throw new InterpretException(cpu.getIndex(), "Can not convert a negative value to a character");
 
-		System.out.println((char) value);
+		System.out.print((char) value);
 		return true;
 	}
 

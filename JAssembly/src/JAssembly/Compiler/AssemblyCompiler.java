@@ -65,6 +65,7 @@ public class AssemblyCompiler {
 		String opcode = values[0];
 		unusedLines.put(lineNum, false);
 		switch (opcode) {
+		case "RET":
 		case "HALT":
 			return;
 		case "JMP":
@@ -159,7 +160,7 @@ public class AssemblyCompiler {
 		if (!name.matches("[a-z]+"))
 			throw new SyntaxException(lineNum, "Constant '" + name + "' needs to be in all lower case");
 
-		if (!value.matches("(r|(m[+-]?))?[0-9]+"))
+		if (!value.matches("(-|r|(m[+-]?))?[0-9]+"))
 			throw new SyntaxException(lineNum, "Operand '" + value + "' needs to be a operand");
 
 		if (constants.containsKey(name))

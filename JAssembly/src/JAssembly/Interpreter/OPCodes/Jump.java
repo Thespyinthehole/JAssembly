@@ -93,6 +93,7 @@ public class Jump {
 			throw new InterpretException("Can only compare a register");
 		case REGISTER:
 			value = cpu.getRegister(OperandConvertor.extractValue(param));
+			value = OperandConvertor.extractValue(value);
 		}
 		param = cpu.readNext();
 		type = OperandConvertor.getType(param);
@@ -106,8 +107,8 @@ public class Jump {
 			break;
 		case REGISTER:
 			value1 = cpu.getRegister(OperandConvertor.extractValue(param));
+			value1 = OperandConvertor.extractValue(value1);
 		}
-		
 		cpu.setFlag(Flag.ZERO, value == value1);
 		cpu.setFlag(Flag.NEGATIVE, value < value1);
 		return true;

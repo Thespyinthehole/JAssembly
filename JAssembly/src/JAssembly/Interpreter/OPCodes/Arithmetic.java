@@ -51,9 +51,10 @@ public class Arithmetic {
 			break;
 		}
 
+		cpu.setRegister(register, output);
+		output = OperandConvertor.extractValue(output);
 		cpu.setFlag(Flag.ZERO, output == 0);
 		cpu.setFlag(Flag.NEGATIVE, output < 0);
-		cpu.setRegister(register, output);
 		return true;
 	}
 
@@ -69,7 +70,6 @@ public class Arithmetic {
 		short register = OperandConvertor.extractValue(param);
 
 		short v1 = cpu.getRegister(register);
-
 		short output = function.apply(v1);
 		
 		int max = (int) Math.pow(2, 13);
@@ -97,9 +97,10 @@ public class Arithmetic {
 			break;
 		}
 
+		cpu.setRegister(register, output);
+		output = OperandConvertor.extractValue(output);
 		cpu.setFlag(Flag.ZERO, output == 0);
 		cpu.setFlag(Flag.NEGATIVE, output < 0);
-		cpu.setRegister(register, output);
 		return true;
 	}
 

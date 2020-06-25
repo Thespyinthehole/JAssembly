@@ -1,0 +1,40 @@
+#Print a integer value
+value = -1235
+valreg = r0
+temp = r1
+mag = r2 
+
+LDR valreg value
+LDR mag 1000
+CMP valreg 0
+JMPL negative
+
+positive:
+    FUNC digits
+    HALT
+
+negative:
+    MUL valreg -1
+    PRT 45
+    JMP positive
+
+digits:
+    CMP mag 0
+    JMPZ done
+    FUNC digit
+    FUNC digits
+    
+    done: 
+        RET
+
+digit:
+    LDR temp valreg
+    CMP temp 0
+    JMPZ print
+    MOD valreg mag
+    DIV temp mag
+    print: 
+        ADD temp 48
+        PRT temp
+        DIV mag 10
+    RET
